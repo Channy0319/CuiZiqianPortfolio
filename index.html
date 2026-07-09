@@ -1,0 +1,2783 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>崔子芊 | Portfolio</title>
+  <meta name="description" content="崔子芊的内容运营、视频策划剪辑、专题效果图与 Project 作品集。">
+  <style>
+    :root {
+      --paper: #f4f1eb;
+      --ink: #191816;
+      --soft-ink: #cfcac1;
+      --muted: #6f6a62;
+      --line: #ddd6ca;
+      --panel: #fffaf1;
+      --red: #9a3129;
+      --teal: #1e6c70;
+      --dark: #25231f;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: auto; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Inter", "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.68;
+    }
+    body.is-loading {
+      overflow: hidden;
+    }
+    .site-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      overflow: hidden;
+      background: var(--paper);
+      color: var(--ink);
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 300ms ease, visibility 0s linear 300ms;
+    }
+    .site-loader.is-leaving {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .loader-label {
+      position: absolute;
+      top: clamp(24px, 4vh, 42px);
+      left: 5vw;
+      margin: 0;
+      color: rgba(25, 24, 22, 0.56);
+      font-size: clamp(11px, 0.8vw, 14px);
+      font-weight: 700;
+      letter-spacing: 0.16em;
+    }
+    .loader-progress {
+      position: absolute;
+      top: clamp(20px, 3.4vh, 36px);
+      right: 5vw;
+      margin: 0;
+      color: rgba(25, 24, 22, 0.32);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(34px, 4.8vw, 76px);
+      font-weight: 400;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .loader-word-wrap {
+      position: absolute;
+      left: 5vw;
+      right: 5vw;
+      bottom: clamp(66px, 10vh, 118px);
+      overflow: hidden;
+    }
+    .loader-word {
+      margin: 0;
+      max-width: 92vw;
+      font-size: clamp(58px, 10.5vw, 180px);
+      font-weight: 700;
+      line-height: 0.88;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+      opacity: 1;
+      filter: blur(0);
+      transition: opacity 180ms ease, filter 220ms ease;
+    }
+    .loader-word.is-changing {
+      opacity: 0;
+      filter: blur(1.5px);
+    }
+    .name-intro {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      display: grid;
+      place-items: center;
+      padding: 6vw;
+      background: var(--paper);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 350ms ease, visibility 0s linear 350ms;
+    }
+    .name-intro.is-active {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 1ms linear;
+    }
+    .name-intro.is-leaving {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 350ms ease, visibility 0s linear 350ms;
+    }
+    .intro-title-line {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(42px, 6.2vw, 96px);
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0;
+      text-align: center;
+      white-space: nowrap;
+      transform: scale(0.98);
+      transform-origin: center;
+      transition:
+        color 700ms ease,
+        transform 700ms cubic-bezier(0.22, 0.7, 0.25, 1);
+    }
+    .intro-typed {
+      white-space: pre;
+    }
+    .typed-character {
+      color: rgba(25, 24, 22, 0.38);
+      animation: characterInk 650ms ease forwards;
+    }
+    .intro-cursor {
+      display: inline-block;
+      color: rgba(25, 24, 22, 0.42);
+      font-weight: 400;
+      opacity: 0;
+    }
+    .name-intro.is-cursor-ready .intro-cursor {
+      opacity: 0.58;
+      animation: cursorBlink 500ms steps(1, end) infinite;
+    }
+    .name-intro.is-cursor-hidden .intro-cursor {
+      opacity: 0;
+      animation: none;
+      transition: opacity 250ms ease;
+    }
+    .name-intro.is-settling .intro-title-line {
+      color: #11100f;
+      transform: scale(1.04);
+    }
+    .name-intro.is-reduced-title .intro-title-line {
+      animation: introTitleFade 260ms ease both;
+      transform: none;
+    }
+    .name-intro.is-reduced-title .intro-cursor {
+      display: none;
+    }
+    body.is-intro-sequence > .topbar,
+    body.is-intro-sequence > .app-shell,
+    body.is-intro-sequence > .contact,
+    body.is-intro-sequence > footer {
+      opacity: 0;
+    }
+    body.site-is-revealing > .topbar,
+    body.site-is-revealing > .app-shell,
+    body.site-is-revealing > .contact,
+    body.site-is-revealing > footer {
+      animation: siteReveal 350ms ease both;
+    }
+    @keyframes characterInk {
+      from {
+        color: rgba(25, 24, 22, 0.38);
+      }
+      to {
+        color: var(--ink);
+      }
+    }
+    @keyframes cursorBlink {
+      0%, 49% { opacity: 0.58; }
+      50%, 100% { opacity: 0.12; }
+    }
+    @keyframes introTitleFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes siteReveal {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    a { color: inherit; text-decoration: none; }
+    img, video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #181715;
+    }
+    button {
+      color: inherit;
+      font: inherit;
+      background: none;
+      border: 0;
+      cursor: pointer;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 64px;
+      padding: 0 5vw;
+      background: rgba(244, 241, 235, 0.86);
+      border-bottom: 1px solid rgba(25, 24, 22, 0.1);
+      backdrop-filter: blur(18px);
+    }
+    .brand { font-weight: 800; }
+    .top-links {
+      display: flex;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .top-links button.active,
+    .top-links button:hover { color: var(--ink); }
+
+    .app-shell {
+      height: 100vh;
+      padding-top: 64px;
+      display: grid;
+      grid-template-rows: 1fr;
+      overflow: hidden;
+    }
+
+    .page-stage {
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .home-page,
+    .section {
+      position: absolute;
+      inset: 0;
+      overflow: auto;
+      padding: 48px 5vw 46px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(14px);
+      transition: opacity 220ms ease, transform 220ms ease, visibility 0s linear 220ms;
+    }
+
+    .home-page.active,
+    .section.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+      transition: opacity 220ms ease, transform 220ms ease, visibility 0s;
+    }
+
+    .home-page {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.46fr);
+      gap: clamp(34px, 5vw, 78px);
+      align-items: start;
+      padding-top: clamp(34px, 6vh, 58px);
+    }
+    .intro {
+      max-width: 860px;
+      position: relative;
+      z-index: 3;
+    }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(40px, 5.4vw, 78px);
+      line-height: 0.92;
+      letter-spacing: 0;
+    }
+    .intro p {
+      max-width: 660px;
+      margin: 20px 0 0;
+      color: #403d37;
+      font-size: clamp(16px, 1.5vw, 20px);
+    }
+
+    .education-list {
+      display: grid;
+      gap: 10px;
+      max-width: 780px;
+      margin-top: 26px;
+    }
+    .education-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(25, 24, 22, 0.14);
+    }
+    .education-item:last-child {
+      border-bottom: 1px solid rgba(25, 24, 22, 0.14);
+    }
+    .education-item h2 {
+      margin: 0;
+      font-size: clamp(22px, 2.45vw, 34px);
+      line-height: 1.05;
+    }
+    .education-item p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .education-date {
+      color: var(--muted);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(16px, 1.45vw, 22px);
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+    .profile-notes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 780px;
+      margin-top: 14px;
+    }
+    .profile-note {
+      padding-top: 10px;
+      border-top: 1px solid rgba(25, 24, 22, 0.12);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .profile-note strong {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .bottom-compass {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 28;
+      min-height: 132px;
+      border-top: 0;
+      background: transparent;
+      overflow: hidden;
+      pointer-events: none;
+      --compass-tilt: 0deg;
+    }
+    .bottom-compass::before {
+      display: none;
+    }
+    .compass-word {
+      position: absolute;
+      z-index: 4;
+      color: rgba(25, 24, 22, 0.18);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(17px, 1.7vw, 28px);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      transition: left 520ms cubic-bezier(.2,.8,.2,1), bottom 520ms cubic-bezier(.2,.8,.2,1), color 260ms ease, opacity 260ms ease, transform 260ms ease;
+      opacity: 1;
+      white-space: nowrap;
+      transform: rotate(var(--compass-tilt));
+      pointer-events: auto;
+      text-shadow: none;
+    }
+    .compass-word.active {
+      color: var(--ink);
+      opacity: 1;
+      transform: rotate(var(--compass-tilt)) translateY(-2px);
+      text-shadow: none;
+    }
+    .compass-word:hover {
+      color: #77736d;
+    }
+    .word-home {
+      left: calc(50% - 42px);
+      bottom: 74px;
+    }
+    .word-video {
+      left: calc(50% - 160px);
+      bottom: 54px;
+    }
+    .word-operation {
+      left: calc(50% - 262px);
+      bottom: 22px;
+    }
+    .word-visual {
+      left: calc(50% + 96px);
+      bottom: 54px;
+    }
+    .word-strategy {
+      left: calc(50% + 150px);
+      bottom: 22px;
+    }
+
+    .needle {
+      position: absolute;
+      left: 50%;
+      bottom: -110px;
+      z-index: 2;
+      width: 220px;
+      height: 220px;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .needle::before,
+    .needle::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 42%;
+      height: 2px;
+      background: rgba(48, 48, 45, 0.36);
+      transform-origin: left center;
+      transition: transform 520ms cubic-bezier(.2,.8,.2,1);
+    }
+    .needle::before { transform: rotate(var(--needle-angle, -25deg)); }
+    .needle::after { transform: rotate(calc(var(--needle-angle, -25deg) - 18deg)); opacity: 0.64; }
+    .needle-dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: #6c6861;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.35);
+    }
+
+    .bottom-compass.is-turning .compass-word {
+      transition-duration: 420ms;
+    }
+
+    .filter-row { display: none; }
+
+    .hero-preview {
+      width: 100%;
+      max-width: 360px;
+      justify-self: end;
+      align-self: start;
+      overflow: hidden;
+      border-radius: var(--radius);
+      border: 0;
+      background: transparent;
+      line-height: 0;
+    }
+    .hero-preview img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      object-position: center top;
+      background: transparent;
+    }
+
+    .hero-caption {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .hero-caption strong {
+      display: block;
+      color: var(--ink);
+      font-size: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 34px;
+      margin-bottom: 30px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(28px, 3.2vw, 48px);
+      line-height: 1.05;
+    }
+    .section-head p {
+      max-width: 640px;
+      margin: 0;
+      color: var(--muted);
+    }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border: 1px solid var(--ink);
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 800;
+      transition: transform 160ms ease, background 160ms ease;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .button.primary { background: var(--ink); color: #fffaf0; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 34px;
+    }
+    .metric {
+      padding: 24px;
+      min-height: 136px;
+      border-right: 1px solid var(--line);
+    }
+    .metric:last-child { border-right: 0; }
+    .metric strong {
+      display: block;
+      font-size: clamp(32px, 4vw, 54px);
+      line-height: 1;
+    }
+    .metric span {
+      display: block;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .project {
+      display: grid;
+      grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .project.reverse {
+      grid-template-columns: minmax(0, 1.22fr) minmax(0, 0.78fr);
+    }
+    .project-info {
+      padding: clamp(24px, 3.5vw, 42px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+    .project-info h3 {
+      margin: 0 0 14px;
+      font-size: clamp(28px, 3vw, 44px);
+      line-height: 1.1;
+    }
+    .project-info p {
+      margin: 0 0 20px;
+      color: #45413a;
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+    .tag {
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(244, 241, 235, 0.74);
+      font-size: 12px;
+    }
+    .points {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .point {
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .point strong { display: block; font-size: 14px; }
+    .point span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .media-frame {
+      overflow: hidden;
+      min-height: 360px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--dark);
+    }
+    .media-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #section-operation {
+      padding-bottom: 150px;
+    }
+    .operation-case {
+      display: grid;
+      gap: clamp(34px, 4.4vw, 64px);
+    }
+    .operation-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(285px, 0.34fr);
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: clamp(10px, 1vw, 16px) clamp(22px, 2.5vw, 44px);
+      align-items: stretch;
+      padding-top: clamp(16px, 2.2vw, 28px);
+      border-top: 1px solid var(--line);
+    }
+    .operation-copy {
+      grid-column: 1;
+      grid-row: 1;
+      display: flex;
+      flex-direction: column;
+      padding: clamp(18px, 2vw, 28px);
+      background: rgba(244, 241, 235, 0.42);
+    }
+    .case-kicker {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .operation-hero h3,
+    .case-chapter h3 {
+      margin: 0;
+      font-size: clamp(34px, 4.2vw, 64px);
+      line-height: 1.03;
+      letter-spacing: 0;
+    }
+    .case-period {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(20px, 2vw, 30px);
+      line-height: 1.1;
+    }
+    .case-summary {
+      max-width: none;
+      margin: 18px 0 0;
+      color: #47433e;
+      font-size: clamp(16px, 1.18vw, 19px);
+      line-height: 1.8;
+    }
+    .case-meta {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 34px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+    .case-meta dt,
+    .case-stat span,
+    .case-card span {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .case-meta dd {
+      margin: 8px 0 0;
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .case-stats {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 0;
+      margin-top: clamp(18px, 2vw, 28px);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+    .case-stat {
+      min-height: 78px;
+      padding: 13px 11px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .case-stat strong {
+      display: block;
+      margin-top: 10px;
+      font-size: clamp(18px, 1.35vw, 26px);
+      line-height: 1;
+    }
+    .case-evidence {
+      display: contents;
+    }
+    .case-data-grid {
+      grid-column: 1;
+      grid-row: 2;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(10px, 1vw, 16px);
+      align-self: start;
+    }
+    .case-image {
+      margin: 0;
+      background: transparent;
+      line-height: 0;
+    }
+    .case-image img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .case-image.data-shot img {
+      height: clamp(185px, 15.8vw, 285px);
+      object-fit: contain;
+      object-position: center;
+      background: #fff;
+    }
+    .case-image.data-shot {
+      grid-column: auto;
+    }
+    .case-image.profile-shot {
+      max-width: 100%;
+      justify-self: stretch;
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      height: 100%;
+    }
+    .case-image.profile-shot img {
+      height: 100%;
+      min-height: 0;
+      object-fit: cover;
+      object-position: center;
+    }
+    .case-image figcaption {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .case-evidence .case-image figcaption {
+      text-align: center;
+    }
+    .case-chapter {
+      display: grid;
+      grid-template-columns: minmax(190px, 0.28fr) minmax(0, 0.72fr);
+      gap: clamp(28px, 5vw, 82px);
+      padding-top: clamp(32px, 5vw, 70px);
+      border-top: 1px solid var(--line);
+    }
+    .case-chapter h4 {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .case-copy {
+      display: grid;
+      gap: 18px;
+      color: #47433e;
+      font-size: clamp(16px, 1.2vw, 19px);
+      line-height: 1.8;
+    }
+    .case-copy p {
+      margin: 0;
+    }
+    .operation-case > .case-chapter:last-child .case-copy {
+      align-self: center;
+    }
+    .case-question {
+      margin: 8px 0;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(22px, 2.3vw, 36px);
+      line-height: 1.25;
+    }
+    .case-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .case-card,
+    .takeaway {
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+    .case-card strong,
+    .takeaway strong {
+      display: block;
+      margin: 8px 0 10px;
+      color: var(--ink);
+      font-size: clamp(18px, 1.5vw, 24px);
+      line-height: 1.25;
+    }
+    .case-card p,
+    .takeaway p {
+      margin: 0;
+      color: #5f5a53;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .strategy-stack,
+    .observation-stack {
+      display: grid;
+      gap: 22px;
+    }
+    .strategy-item,
+    .observation-item {
+      display: grid;
+      grid-template-columns: 118px minmax(0, 1fr);
+      gap: 24px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+    .strategy-item span,
+    .observation-item span {
+      color: var(--muted);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+    }
+    .strategy-item h5,
+    .observation-item h5 {
+      margin: 0 0 10px;
+      font-size: clamp(20px, 1.7vw, 28px);
+      line-height: 1.2;
+    }
+    .example-line {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+    }
+    .reflection-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+    .reflection-list li {
+      padding-left: 18px;
+      position: relative;
+    }
+    .reflection-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.78em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ink);
+      opacity: 0.42;
+    }
+    .takeaway-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .deck-board {
+      display: grid;
+      gap: clamp(38px, 5vw, 70px);
+      padding-bottom: 96px;
+    }
+    #section-strategy .section-head {
+      margin-bottom: clamp(18px, 2.4vw, 34px);
+    }
+    .deck-project {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.68fr) minmax(420px, 1.32fr);
+      gap: clamp(34px, 5vw, 78px);
+      align-items: center;
+      min-height: min(48vh, 470px);
+      padding: clamp(18px, 3vw, 36px) 0;
+      border-top: 1px solid var(--line);
+    }
+    .deck-project:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+    .deck-kicker {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .deck-copy h3 {
+      margin: 0;
+      font-size: clamp(32px, 4.6vw, 72px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+    .deck-copy p {
+      max-width: 34em;
+      margin: 20px 0 0;
+      color: #47433e;
+      font-size: clamp(15px, 1.12vw, 18px);
+      line-height: 1.75;
+    }
+    .deck-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .deck-meta span {
+      padding: 5px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(244, 241, 235, 0.72);
+    }
+    .deck-detail-hint {
+      display: inline-block;
+      margin-top: 24px;
+      color: rgba(17, 16, 15, 0.46);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(17px, 1.35vw, 24px);
+      line-height: 1.25;
+    }
+    .deck-cover-link .deck-detail-hint {
+      display: block;
+      margin-top: 14px;
+      text-align: right;
+    }
+    .deck-cover-link {
+      display: block;
+      line-height: 0;
+      background: transparent;
+      transition: transform 260ms ease, opacity 260ms ease;
+    }
+    .deck-cover-link:hover {
+      transform: scale(1.01);
+      opacity: 0.94;
+    }
+    .deck-cover-link img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+    .deck-placeholder {
+      min-height: 34vh;
+      opacity: 0.46;
+    }
+    .deck-placeholder .deck-empty {
+      min-height: 280px;
+      border: 1px solid var(--line);
+      background: rgba(244, 241, 235, 0.3);
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      align-items: start;
+    }
+    .video-card {
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+    .video-card video {
+      aspect-ratio: var(--video-ratio, auto);
+      width: 100%;
+      height: auto;
+      max-height: 70vh;
+      object-fit: contain;
+      background: #161514;
+    }
+    .video-card figcaption {
+      padding: 12px 14px 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .gallery figure {
+      margin: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+    .gallery .wide { grid-column: span 2; }
+    .gallery .tall { grid-row: span 2; }
+    .gallery img { aspect-ratio: 4 / 3; height: auto; }
+    .gallery .tall img {
+      aspect-ratio: 9 / 16;
+      object-fit: contain;
+      background: #e8dcc8;
+    }
+    .gallery figcaption {
+      padding: 10px 12px 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .showcase-section {
+      overflow: hidden;
+      padding: 0;
+    }
+    .showcase-section .section-head {
+      position: absolute;
+      top: 34px;
+      left: 0;
+      right: 0;
+      z-index: 8;
+      padding: 0 5vw;
+      margin: 0;
+      background: transparent;
+      pointer-events: none;
+    }
+    .showcase-section .section-head h2,
+    .showcase-section .section-head p {
+      text-shadow: 0 1px 14px var(--paper), 0 1px 14px var(--paper);
+    }
+    .showcase-section .section-head p {
+      display: none;
+    }
+    #section-visual .section-head p {
+      display: block;
+      max-width: 460px;
+      color: rgba(71, 67, 62, 0.76);
+      font-size: clamp(15px, 1.12vw, 19px);
+      line-height: 1.7;
+      text-align: right;
+    }
+    #section-visual .section-head {
+      display: block;
+      top: clamp(28px, 5vh, 52px);
+    }
+    #section-visual .section-head p {
+      display: none;
+    }
+    #section-visual {
+      background: var(--paper);
+    }
+    #section-visual .showcase-rail {
+      padding-top: 4vh;
+      padding-bottom: 4vh;
+    }
+    #section-visual .visual-intro-card,
+    #section-video .showcase-card.video-intro-card {
+      width: min(680px, 86vw);
+      max-width: none;
+      height: min(70vh, 720px);
+      min-height: 560px;
+      align-items: stretch;
+      background: rgba(244, 241, 235, 0.42);
+    }
+    #section-visual .visual-intro-card:hover,
+    #section-visual .visual-intro-card.is-active,
+    #section-video .video-intro-card:hover,
+    #section-video .video-intro-card.is-active {
+      transform: translateY(var(--wheel-y, 0px)) scale(1);
+    }
+    #section-visual .visual-intro-card,
+    #section-video .video-intro-card {
+      transform: translateY(var(--wheel-y, 0px)) scale(1);
+      opacity: 1;
+      filter: saturate(1);
+    }
+    .visual-intro {
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      padding: clamp(28px, 3.3vw, 52px);
+      text-align: left;
+    }
+    .visual-intro-copy {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .visual-intro-label,
+    .visual-language-label {
+      margin: 0;
+      color: rgba(25, 24, 22, 0.5);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+    }
+    .video-intro-meta {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .video-intro-note {
+      max-width: 230px;
+      margin: 0;
+      color: rgba(25, 24, 22, 0.48);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(11px, 0.78vw, 13px);
+      line-height: 1.5;
+      text-align: right;
+    }
+    .visual-intro h3 {
+      margin: 14px 0 22px;
+      font-size: clamp(40px, 4.2vw, 66px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+    .visual-intro-summary {
+      margin: 8px 0 0;
+      max-width: 36em;
+      color: rgba(25, 24, 22, 0.7);
+      font-size: clamp(13px, 1vw, 16px);
+      line-height: 1.75;
+    }
+    .visual-intro-summary p {
+      margin: 0;
+    }
+    .visual-intro-summary p + p {
+      margin-top: 12px;
+    }
+    .visual-intro-summary p:first-child {
+      color: rgba(25, 24, 22, 0.86);
+      font-size: clamp(15px, 1.15vw, 18px);
+      font-weight: 600;
+      line-height: 1.65;
+    }
+    .design-principles {
+      width: 100%;
+      max-width: 36em;
+      margin-top: auto;
+      padding-top: clamp(22px, 2.4vw, 34px);
+    }
+    .design-principles > p {
+      margin: 0 0 8px;
+      color: rgba(25, 24, 22, 0.48);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .principle-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 20px;
+    }
+    .principle-item {
+      padding: 11px 0 10px;
+      border-top: 1px solid rgba(25, 24, 22, 0.13);
+    }
+    .principle-item strong {
+      display: block;
+      margin-bottom: 5px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 16px;
+      font-weight: 400;
+    }
+    .principle-item span {
+      display: block;
+      color: rgba(25, 24, 22, 0.56);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .visual-language {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: clamp(14px, 1.5vw, 22px);
+      padding-left: clamp(26px, 3vw, 46px);
+      border-left: 1px solid rgba(25, 24, 22, 0.13);
+    }
+    .visual-language-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 22px;
+    }
+    .visual-language-head p:last-child {
+      max-width: 270px;
+      margin: 0;
+      color: rgba(25, 24, 22, 0.52);
+      font-size: 11px;
+      line-height: 1.55;
+      text-align: right;
+    }
+    .visual-language-list {
+      min-height: 0;
+      display: grid;
+      grid-template-rows: repeat(4, minmax(0, 1fr));
+    }
+    .visual-language-item {
+      min-width: 0;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 26px minmax(92px, 0.72fr) minmax(112px, 0.9fr) minmax(150px, 1.25fr);
+      align-items: center;
+      gap: clamp(10px, 1vw, 16px);
+      padding: clamp(10px, 1.2vh, 15px) 0;
+      border-top: 1px solid rgba(25, 24, 22, 0.13);
+    }
+    .language-number {
+      align-self: start;
+      padding-top: 3px;
+      color: rgba(25, 24, 22, 0.42);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13px;
+    }
+    .language-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(15px, 1.15vw, 19px);
+      font-weight: 400;
+      line-height: 1.15;
+    }
+    .language-material {
+      height: 100%;
+      min-height: 68px;
+      max-height: 92px;
+      overflow: hidden;
+      background: #d8d3cb;
+    }
+    #section-visual .language-material img {
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      object-fit: cover;
+      filter: saturate(0.82) contrast(1.04);
+      transform: scale(1.62);
+    }
+    .material-film img { object-position: 50% 38%; transform-origin: 50% 38%; }
+    .material-vinyl img { object-position: 28% 48%; transform-origin: 28% 48%; }
+    .material-news img { object-position: 50% 28%; transform-origin: 50% 28%; }
+    .material-torn img { object-position: 50% 44%; transform-origin: 50% 44%; }
+    .language-description {
+      margin: 0;
+      color: rgba(25, 24, 22, 0.56);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(10px, 0.76vw, 12px);
+      line-height: 1.55;
+    }
+    .showcase-rail {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: clamp(7px, 0.9vw, 14px);
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 9vh 11vw 3vh;
+      scroll-snap-type: none;
+      cursor: grab;
+      user-select: none;
+      perspective: 1200px;
+      scroll-behavior: auto;
+      overscroll-behavior: contain;
+    }
+    #section-video .showcase-rail {
+      gap: clamp(4px, 0.65vw, 11px);
+      padding-top: 4vh;
+      padding-bottom: 4vh;
+      padding-left: max(5vw, calc(50vw - 175px));
+      padding-right: max(5vw, calc(50vw - 175px));
+    }
+    #section-video .showcase-card {
+      width: fit-content;
+      max-width: 72vw;
+    }
+    #section-video .showcase-card video {
+      max-width: min(350px, 68vw);
+      max-height: min(68vh, 660px);
+    }
+    #section-video .showcase-card video.is-portrait {
+      height: min(68vh, 660px);
+    }
+    #section-video .showcase-card video.is-landscape {
+      max-height: min(61vh, 610px);
+    }
+    .showcase-rail.is-dragging { cursor: grabbing; }
+    .showcase-rail::-webkit-scrollbar {
+      height: 0;
+    }
+    .showcase-card {
+      position: relative;
+      flex: 0 0 auto;
+      width: min(max(var(--card-w, 540px), 500px), 88vw);
+      max-width: 900px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: inherit;
+      text-decoration: none;
+      scroll-snap-align: none;
+      transform: translateY(var(--wheel-y, 0px)) scale(var(--focus-scale, 0.92));
+      transform-origin: center center;
+      transition: transform 260ms ease, filter 260ms ease, opacity 260ms ease;
+      opacity: var(--focus-opacity, 0.78);
+      filter: saturate(var(--focus-sat, 0.9));
+    }
+    .showcase-card:nth-child(9n + 4) { --card-w: 560px; }
+    .showcase-card:nth-child(9n + 7) { --card-w: 580px; }
+    .showcase-card:nth-child(10n + 2) { --card-w: 520px; }
+    .showcase-card:nth-child(10n + 8) { --card-w: 540px; }
+    .showcase-card.is-portrait {
+      width: min(max(var(--card-w, 460px), 460px), 78vw);
+    }
+    .showcase-card:hover,
+    .showcase-card.is-active {
+      z-index: 5;
+      transform: translateY(var(--wheel-y, 0px)) scale(1.03);
+      opacity: 1;
+      filter: saturate(1);
+    }
+    .showcase-card video {
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: min(74vh, 720px);
+      aspect-ratio: var(--video-ratio, auto);
+      object-fit: contain;
+      border: 0;
+      box-shadow: none;
+      background: transparent;
+    }
+    .video-play-toggle {
+      position: absolute;
+      left: 50%;
+      top: calc((100% - 58px) / 2);
+      z-index: 8;
+      width: 62px;
+      height: 62px;
+      transform: translate(-50%, -50%) scale(0.96);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      background: rgba(17, 16, 15, 0.26);
+      color: #fff;
+      font-size: 22px;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      pointer-events: none;
+      cursor: pointer;
+      transition: opacity 180ms ease, transform 180ms ease, background 180ms ease;
+      backdrop-filter: blur(4px);
+    }
+    .showcase-card:not(.is-portrait) .video-play-toggle {
+      top: calc((100% - 58px) / 2 - 18px);
+    }
+    .showcase-card:hover .video-play-toggle,
+    .showcase-card:focus-within .video-play-toggle {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .showcase-card.is-playing .video-play-toggle {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .video-play-toggle:hover {
+      background: rgba(17, 16, 15, 0.42);
+    }
+    .showcase-card video.is-portrait {
+      height: min(74vh, 720px);
+      width: auto;
+    }
+    .showcase-card video.is-landscape {
+      width: 100%;
+      height: auto;
+      max-height: min(66vh, 660px);
+    }
+    .showcase-card img {
+      width: 100%;
+      height: auto;
+      max-height: min(74vh, 720px);
+      object-fit: contain;
+      border: 0;
+      box-shadow: none;
+      background: transparent;
+    }
+    .showcase-card figcaption {
+      position: static;
+      width: 100%;
+      margin-top: 14px;
+      transform: none;
+      color: rgba(25, 24, 22, 0.72);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(18px, 1.5vw, 28px);
+      line-height: 1.15;
+      text-align: center;
+      text-shadow: none;
+      pointer-events: none;
+    }
+    #section-video .showcase-card figcaption {
+      display: grid;
+      gap: 6px;
+      font-family: inherit;
+      line-height: 1.35;
+    }
+    #section-video .video-category {
+      color: rgba(25, 24, 22, 0.48);
+      font-size: clamp(12px, 0.78vw, 15px);
+      font-weight: 600;
+    }
+    #section-video .video-name {
+      color: rgba(25, 24, 22, 0.78);
+      font-family: Georgia, "Times New Roman", "Songti SC", serif;
+      font-size: clamp(16px, 1.12vw, 22px);
+    }
+    .showcase-hint {
+      display: none;
+    }
+
+    .ppt-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      gap: 20px;
+      align-items: start;
+    }
+    #section-strategy .ppt-shell {
+      grid-template-columns: 1fr;
+    }
+    .ppt-note {
+      display: none;
+    }
+    .slide-list {
+      display: grid;
+      gap: 10px;
+      max-height: 720px;
+      overflow: auto;
+      padding-right: 6px;
+    }
+    .slide-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      background: var(--panel);
+    }
+    .slide-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--red);
+      font-size: 13px;
+    }
+    .slide-card p {
+      display: none;
+    }
+
+    .contact {
+      padding: 76px 5vw 42px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 30px;
+      align-items: end;
+      border-top: 1px solid var(--line);
+    }
+    .contact h2 {
+      margin: 0;
+      font-size: clamp(38px, 6vw, 82px);
+      line-height: 0.98;
+    }
+    .contact p { max-width: 660px; color: var(--muted); }
+    footer {
+      padding: 28px 5vw 44px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .app-shell { grid-template-rows: 1fr; }
+      .home-page { grid-template-columns: 1fr; align-items: start; }
+      .hero-preview { justify-self: start; max-width: 360px; }
+      .visual-intro {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 30px;
+      }
+      .visual-language {
+        padding-left: 24px;
+      }
+      .visual-language-item {
+        grid-template-columns: 22px minmax(80px, 0.7fr) minmax(96px, 0.85fr) minmax(120px, 1.2fr);
+        gap: 9px;
+      }
+      .principle-item span {
+        font-size: 11px;
+      }
+      .profile-notes { grid-template-columns: 1fr; }
+      .bottom-compass { min-height: 124px; }
+      .bottom-compass::before { width: 360px; height: 180px; bottom: -96px; }
+      .compass-word { font-size: clamp(16px, 2.8vw, 26px); }
+      .word-home { left: calc(50% - 36px); bottom: 68px; }
+      .word-video { left: calc(50% - 136px); bottom: 52px; }
+      .word-operation { left: calc(50% - 222px); bottom: 22px; }
+      .word-visual { left: calc(50% + 78px); bottom: 52px; }
+      .word-strategy { left: calc(50% + 120px); bottom: 22px; }
+      .needle { width: 190px; height: 190px; bottom: -95px; }
+      .project, .project.reverse, .ppt-shell, .deck-project, .operation-hero, .case-chapter, .contact { grid-template-columns: 1fr; }
+      .metrics, .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .operation-copy { display: block; }
+      .operation-copy,
+      .case-image.profile-shot,
+      .case-data-grid,
+      .case-image.data-shot {
+        grid-column: auto;
+        grid-row: auto;
+      }
+      .case-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .case-evidence {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .case-data-grid { grid-template-columns: 1fr; }
+      .case-image.profile-shot { max-width: 100%; justify-self: stretch; height: auto; }
+      .case-image.profile-shot img { height: auto; object-fit: contain; }
+      .case-image.data-shot img { height: auto; aspect-ratio: auto; }
+      .case-card-grid, .takeaway-grid { grid-template-columns: 1fr; }
+      .gallery .wide { grid-column: span 1; }
+    }
+    @media (max-width: 680px) {
+      .loader-label {
+        top: 22px;
+        left: 6vw;
+      }
+      .loader-progress {
+        top: 20px;
+        right: 6vw;
+        font-size: clamp(30px, 10vw, 48px);
+      }
+      .loader-word-wrap {
+        left: 6vw;
+        right: 6vw;
+        bottom: 12vh;
+      }
+      .loader-word {
+        font-size: clamp(46px, 16vw, 76px);
+      }
+      .name-intro {
+        padding: 8vw;
+      }
+      .intro-title-line {
+        max-width: 90vw;
+        font-size: clamp(27px, 7.8vw, 44px);
+        line-height: 1.08;
+      }
+      .topbar { align-items: flex-start; flex-direction: column; padding-top: 14px; padding-bottom: 14px; }
+      .top-links { width: 100%; justify-content: space-between; gap: 10px; font-size: 13px; }
+      .app-shell { padding-top: 92px; grid-template-rows: 1fr; }
+      .home-page, .section { padding: 32px 5vw; }
+      .education-item { grid-template-columns: 1fr; gap: 8px; }
+      .education-date { font-size: 18px; }
+      .bottom-compass { min-height: 112px; }
+      .bottom-compass::before { width: 300px; height: 150px; bottom: -80px; }
+      .compass-word { font-size: clamp(14px, 4.8vw, 22px); }
+      .word-home { left: calc(50% - 30px); bottom: 58px; }
+      .word-video { left: calc(50% - 106px); bottom: 42px; }
+      .word-operation { left: calc(50% - 170px); bottom: 18px; }
+      .word-visual { left: calc(50% + 62px); bottom: 42px; }
+      .word-strategy { left: calc(50% + 84px); bottom: 18px; }
+      .needle { width: 160px; height: 160px; bottom: -80px; }
+      .hero-caption, .section-head { display: block; }
+      .section { padding: 56px 5vw; }
+      .metrics, .points, .video-grid, .gallery { grid-template-columns: 1fr; }
+      .case-meta { grid-template-columns: 1fr; }
+      .case-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .strategy-item, .observation-item { grid-template-columns: 1fr; gap: 8px; }
+      .showcase-section { padding-top: 0; }
+      .showcase-section .section-head { display: block; }
+      .showcase-rail {
+        height: 100%;
+        gap: 9px;
+        padding: 8vh 9vw 4vh;
+      }
+      .showcase-card {
+        width: min(var(--card-w, 420px), 82vw);
+      }
+      #section-visual .visual-intro-card,
+      #section-video .showcase-card.video-intro-card {
+        width: 88vw;
+        height: 68vh;
+        min-height: 520px;
+        overflow-y: auto;
+      }
+      .visual-intro {
+        min-height: 100%;
+        grid-template-columns: 1fr;
+        gap: 42px;
+      }
+      .video-intro-meta {
+        display: block;
+      }
+      .video-intro-note {
+        margin-top: 10px;
+        text-align: left;
+      }
+      .visual-language {
+        min-height: 430px;
+        padding: 34px 0 0;
+        border-top: 1px solid rgba(25, 24, 22, 0.13);
+        border-left: 0;
+      }
+      .visual-language-item {
+        grid-template-columns: 26px minmax(0, 0.8fr) minmax(110px, 1fr);
+      }
+      .language-material {
+        min-height: 74px;
+      }
+      .language-description {
+        grid-column: 2 / 4;
+      }
+      .metric { border-right: 0; border-bottom: 1px solid var(--line); }
+      .metric:last-child { border-bottom: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .site-loader,
+      .name-intro {
+        transition-duration: 160ms;
+      }
+      .loader-word {
+        filter: none;
+        transition: opacity 80ms linear;
+      }
+      .loader-word.is-changing {
+        filter: none;
+      }
+      .typed-character {
+        animation: none;
+        color: var(--ink);
+      }
+      .name-intro.is-settling .intro-title-line {
+        transform: none;
+      }
+      body.site-is-revealing > .topbar,
+      body.site-is-revealing > .app-shell,
+      body.site-is-revealing > .contact,
+      body.site-is-revealing > footer {
+        animation-duration: 220ms;
+      }
+    }
+  </style>
+</head>
+<body class="is-loading is-intro-sequence">
+  <div class="site-loader" id="site-loader" aria-label="Portfolio loading">
+    <p class="loader-label">PORTFOLIO 2026</p>
+    <p class="loader-progress"><span id="loader-percent">0</span>%</p>
+    <div class="loader-word-wrap">
+      <p class="loader-word" id="loader-word">STRATEGY</p>
+    </div>
+  </div>
+  <div class="name-intro" id="name-intro" aria-hidden="true">
+    <p class="intro-title-line" aria-label="Cui Ziqian Portfolio">
+      <span class="intro-typed" id="intro-typed" aria-hidden="true"></span><span class="intro-cursor" id="intro-cursor" aria-hidden="true">|</span>
+    </p>
+  </div>
+  <nav class="topbar" aria-label="主导航">
+    <a class="brand" href="#">崔子芊 Cui Ziqian</a>
+    <div class="top-links">
+      <button class="nav-trigger active" data-section="home">首页</button>
+      <button class="nav-trigger" data-section="video">视频</button>
+      <button class="nav-trigger" data-section="operation">运营</button>
+      <button class="nav-trigger" data-section="visual">海报</button>
+      <button class="nav-trigger" data-section="strategy">项目</button>
+    </div>
+  </nav>
+
+  <div class="app-shell">
+    <main class="page-stage" id="work">
+      <section class="home-page active" id="section-home" data-section="home">
+        <div class="intro">
+          <p class="eyebrow">About / Education / Portfolio</p>
+          <h1>崔子芊<br>Cui Ziqian</h1>
+          <div class="education-list" aria-label="教育背景">
+            <article class="education-item">
+              <div>
+                <h2>香港中文大学</h2>
+                <p>硕士 · 新媒体</p>
+              </div>
+              <span class="education-date">2026.09<br>2027.06</span>
+            </article>
+            <article class="education-item">
+              <div>
+                <h2>中国传媒大学</h2>
+                <p>本科 · 网络与新媒体（智能融媒运营方向）</p>
+              </div>
+              <span class="education-date">2022.09<br>2026.06</span>
+            </article>
+          </div>
+          <div class="profile-notes">
+            <div class="profile-note"><strong>GPA 3.82/4</strong>专业成绩</div>
+            <div class="profile-note"><strong>雅思 8.0 / 六级 661</strong>英语能力</div>
+            <div class="profile-note"><strong>品牌传播 / 数字营销 / 产品运营</strong>主修课程</div>
+          </div>
+        </div>
+        <div class="hero-preview"><img id="heroPreview" src="assets/profile-photo.png" alt="崔子芊个人照片"></div>
+      </section>
+
+      <section class="section showcase-section" id="section-video" data-section="video">
+      <div class="section-head">
+        <h2>视频策划与剪辑</h2>
+        <p>横向滚轮浏览作品。靠近中线的内容会自动放大，视频保留原始比例，按播放键可直接预览成片。</p>
+      </div>
+      <div class="showcase-rail">
+        <article class="showcase-card video-intro-card" data-initial-focus="true">
+          <div class="visual-intro">
+            <div class="visual-intro-copy">
+              <div class="video-intro-meta">
+                <p class="visual-intro-label">VIDEO PRODUCTION</p>
+                <p class="video-intro-note">From news reporting to social storytelling.</p>
+              </div>
+              <h3>视频策划与制作</h3>
+              <div class="visual-intro-summary">
+                <p>这一部分收录了我在不同项目中的视频作品，包括国际传播、新闻资讯、文化内容及主题短片等。根据不同平台和传播场景，我参与了视频的内容策划、脚本撰写、视频剪辑及视觉包装工作，并结合目标受众的观看习惯对内容表达方式进行优化，提高信息传递效率和传播效果。</p>
+              </div>
+              <div class="design-principles">
+                <p>Editorial Approach</p>
+                <div class="principle-list">
+                  <div class="principle-item">
+                    <strong>Platform-first</strong>
+                    <span>根据不同平台的传播特点调整视频节奏、字幕密度和画面结构，使内容更符合移动端浏览习惯。</span>
+                  </div>
+                  <div class="principle-item">
+                    <strong>Storytelling</strong>
+                    <span>结合人物、事件和生活化切入点组织内容，在保证信息准确性的同时增强内容可读性。</span>
+                  </div>
+                  <div class="principle-item">
+                    <strong>Localization</strong>
+                    <span>针对海外传播内容，结合受众的文化背景和表达习惯进行本地化优化，降低理解门槛。</span>
+                  </div>
+                  <div class="principle-item">
+                    <strong>Visual Communication</strong>
+                    <span>通过画面节奏、字幕设计和视觉信息层级强化内容表达，提高观看体验和传播效率。</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <figure class="showcase-card" style="--card-w: 520px">
+          <video controls preload="metadata" poster="assets/china-daily-yearend.png" src="../../中国日报/年终/版本/完稿/2024年终视频-中国色彩.mp4"></video>
+          <figcaption><span class="video-category">年度策划</span><span class="video-name">《2024：中国色彩》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 290px">
+          <video controls preload="metadata" poster="assets/year-night-dinner-cover.jpg" src="../../中国日报/春节/年夜饭/春节-各地特色年夜饭.mp4"></video>
+          <figcaption><span class="video-category">年度策划</span><span class="video-name">《中国年夜饭招牌菜图鉴》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 500px">
+          <video controls preload="metadata" src="../../军报/国庆/9月17日(1)/国庆纪念视频.mp4"></video>
+          <figcaption><span class="video-category">时政与纪念</span><span class="video-name">《峥嵘岁月稠》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 300px">
+          <video controls preload="metadata" poster="assets/martyr-cover.jpg" src="../../军报/80年了，他们从未真正离去！童声合唱燃爆泪腺！/抗美援朝胜利80周年纪念视频.mp4"></video>
+          <figcaption><span class="video-category">时政与纪念</span><span class="video-name">《归来·山河已无恙》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 300px">
+          <video controls preload="metadata" src="../../中国日报/日常/20250226婚礼/日常-Z世代花式婚礼.mp4"></video>
+          <figcaption><span class="video-category">社会与文化</span><span class="video-name">《Z世代的婚礼新风尚》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 310px">
+          <video controls preload="metadata" src="../../中国日报/日常/20250219农业无人机/日常-农业无人机.mp4"></video>
+          <figcaption><span class="video-category">科技与产业</span><span class="video-name">《无人机重塑中国农业》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 310px">
+          <video controls preload="metadata" src="../../中国日报/日常/20250303无人机快递/3月4日.mp4"></video>
+          <figcaption><span class="video-category">科技与产业</span><span class="video-name">《无人驾驶卡车驶入物流赛道》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 300px">
+          <video controls preload="metadata" src="../../中国日报/日常/20250207哪吒/日常-哪吒.mp4"></video>
+          <figcaption><span class="video-category">社会与文化</span><span class="video-name">《〈哪吒2〉引发全球观影热潮》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 480px">
+          <video controls preload="metadata" src="../../中国日报/日常/20241231高铁/完稿/2.mp4"></video>
+          <figcaption><span class="video-category">科技与产业</span><span class="video-name">《中国新一代高铁引发全球关注》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 300px">
+          <video controls preload="metadata" src="../../中国日报/日常/20250313爱达魔都号/日常-爱达魔都号.mp4"></video>
+          <figcaption><span class="video-category">科技与产业</span><span class="video-name">《爱达·魔都号完成百航里程碑》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 300px">
+          <video controls preload="metadata" src="../../中国日报/日常/20250306山西午睡/日常-山西午睡文化.mp4"></video>
+          <figcaption><span class="video-category">社会与文化</span><span class="video-name">《山西的狗真的要午睡吗？》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 300px">
+          <video controls preload="metadata" src="../../中国日报/日常/20250120小红书翻译/小红书上线翻译功能.mp4"></video>
+          <figcaption><span class="video-category">科技与产业</span><span class="video-name">《小红书为“TikTok难民”上线翻译功能》</span></figcaption>
+        </figure>
+        <figure class="showcase-card" style="--card-w: 300px">
+          <video controls preload="metadata" src="../../中国日报/日常/20250312机器人/日常-智元机器人.mp4"></video>
+          <figcaption><span class="video-category">科技与产业</span><span class="video-name">《具身智能机器人再进一步》</span></figcaption>
+        </figure>
+      </div>
+      <span class="showcase-hint">Scroll horizontally / Click a work to center</span>
+      </section>
+
+      <section class="section" id="section-operation" data-section="operation">
+      <div class="section-head">
+        <h2>内容运营与增长</h2>
+        <p>一次从 0 到 280 万播放的内容策略实验。用选题、情绪共鸣和数据复盘验证账号冷启动的增长逻辑。</p>
+      </div>
+      <div class="operation-case">
+        <article class="operation-hero">
+          <div class="operation-copy">
+            <p class="case-kicker">Case 01 / Xiaohongshu Growth Experiment</p>
+            <h3>MBTI账号运营实践</h3>
+            <p class="case-period">2024.09 – 2024.12</p>
+            <p class="case-summary">以 MBTI 兴趣内容为切入点，在没有个人 IP、没有粉丝基础的情况下，通过平台规律观察、内容策略设计和持续数据复盘，完成 3 个月账号冷启动实验。</p>
+            <div class="case-stats" aria-label="项目结果">
+              <div class="case-stat"><span>运营周期</span><strong>3个月</strong></div>
+              <div class="case-stat"><span>累计播放</span><strong>280w+</strong></div>
+              <div class="case-stat"><span>点赞</span><strong>7.1w+</strong></div>
+              <div class="case-stat"><span>收藏</span><strong>3.2w+</strong></div>
+              <div class="case-stat"><span>评论</span><strong>7.5w+</strong></div>
+              <div class="case-stat"><span>粉丝增长</span><strong>700+</strong></div>
+            </div>
+          </div>
+          <div class="case-evidence">
+            <figure class="case-image profile-shot">
+              <img src="assets/mbti-profile.png" alt="MBTI 后花园小红书账号主页截图">
+              <figcaption>账号主页与阶段性获赞收藏数据。</figcaption>
+            </figure>
+            <div class="case-data-grid">
+              <figure class="case-image data-shot">
+                <img src="assets/mbti-view-data.png" alt="MBTI 小红书账号观看数据曲线">
+                <figcaption>运营周期内播放趋势</figcaption>
+              </figure>
+              <figure class="case-image data-shot">
+                <img src="assets/mbti-engagement-data.png" alt="MBTI 小红书账号互动数据曲线">
+                <figcaption>运营周期内互动表现</figcaption>
+              </figure>
+            </div>
+          </div>
+        </article>
+
+        <article class="case-chapter">
+          <div>
+            <h4>Project Background</h4>
+            <h3>项目背景</h3>
+          </div>
+          <div class="case-copy">
+            <p>本项目源于《智能融媒体运营》课程实践。</p>
+            <p>与多数个人账号不同，我并没有长期运营个人 IP 的计划，也并非出于持续内容创作的兴趣，而是希望将这次课程作业作为一次内容传播“实验”。</p>
+            <div class="case-question">我希望能在没有个人 IP、没有粉丝基础的情况下，只依靠平台规律分析、内容策略设计和持续数据复盘实现内容增长。</div>
+            <p>因此，在整个项目中，我更关注：</p>
+            <ul class="reflection-list">
+              <li>平台推荐机制如何影响内容传播；</li>
+              <li>哪些内容更容易激发用户互动；</li>
+              <li>如何通过不断对比和验证假设提高内容传播效率。</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="case-chapter">
+          <div>
+            <h4>Why MBTI</h4>
+            <h3>为什么选择 MBTI？</h3>
+          </div>
+          <div class="case-copy">
+            <p>运营开始前，我对影视、情感、知识分享等多个内容赛道进行了初步观察，最终选择 MBTI 作为切入点，主要基于以下三个判断：</p>
+            <div class="case-card-grid">
+              <div class="case-card">
+                <span>01</span>
+                <strong>成熟的兴趣社区</strong>
+                <p>MBTI 拥有稳定的年轻用户群体，具备持续的内容消费需求。</p>
+              </div>
+              <div class="case-card">
+                <span>02</span>
+                <strong>内容生产效率高</strong>
+                <p>相比需要大量素材积累或专业知识输出的赛道，MBTI 更适合快速验证不同内容策略。</p>
+              </div>
+              <div class="case-card">
+                <span>03</span>
+                <strong>天然具有互动属性</strong>
+                <p>MBTI 本质上是一种身份标签，相比阅读内容，用户更愿意分享自己的类型和经历，因此评论区更容易形成 UGC 讨论，进一步促进内容传播。</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="case-chapter">
+          <div>
+            <h4>Content Strategy</h4>
+            <h3>内容策略</h3>
+          </div>
+          <div class="case-copy">
+            <p>运营过程初期，我并没有固定沿用一种内容形式，而是持续根据数据反馈调整选题、封面和发布时间，并不断验证不同策略的实际效果，最终根据数据选定了一种内容形式。</p>
+            <div class="strategy-stack">
+              <div class="strategy-item">
+                <span>Strategy 01</span>
+                <div>
+                  <h5>问题式标题</h5>
+                  <p>相比直接输出观点，我选择了提出开放式问题，引导用户分享自己的经历和看法，提高评论互动率。</p>
+                </div>
+              </div>
+              <div class="strategy-item">
+                <span>Strategy 02</span>
+                <div>
+                  <h5>情绪价值优先</h5>
+                  <p>MBTI 只是内容载体，真正吸引用户参与讨论的往往是“恋爱”“友情”“幸福感”等情绪议题，因此内容更多围绕情绪共鸣展开，而非人格知识科普。</p>
+                </div>
+              </div>
+              <div class="strategy-item">
+                <span>Strategy 03</span>
+                <div>
+                  <h5>持续测试与迭代</h5>
+                  <p>我围绕封面形式和发布时间进行了多轮 A/B 测试，实践中发现，相比设计感更强的封面，大字号、直接提出问题的封面反而更容易获得点击；发布时间方面，傍晚时段整体表现优于上午及深夜，更容易获得初始推荐。因此后续内容持续采用“高识别度封面 + 傍晚发布”的策略进行优化。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="case-chapter">
+          <div>
+            <h4>Key Insights</h4>
+            <h3>关键洞察</h3>
+          </div>
+          <div class="observation-stack">
+            <div class="observation-item">
+              <span>Insight 01</span>
+              <div><h5>用户更愿意表达，而不是获取答案</h5><p>MBTI 本身只是讨论的切入点，真正驱动传播的是用户分享自身经历和观点的意愿，因此评论区成为内容传播的重要组成部分。</p></div>
+            </div>
+            <div class="observation-item">
+              <span>Insight 02</span>
+              <div><h5>降低理解成本比提升设计感更重要</h5><p>A/B 测试发现，封面越直接、信息越明确，整体点击表现反而更好。相比精致的视觉设计，快速传达内容主题更符合平台浏览习惯。</p></div>
+            </div>
+            <div class="observation-item">
+              <span>Insight 03</span>
+              <div><h5>内容增长依赖持续验证，而不是一次爆款</h5><p>从封面样式到发布时间，不同变量都会影响内容表现。相比依赖经验判断，更重要的是不断提出假设、验证结果，并根据数据持续调整策略。</p></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="case-chapter">
+          <div>
+            <h4>Reflection</h4>
+            <h3>项目总结</h3>
+          </div>
+          <div class="case-copy">
+            <p>如果重新运营这个账号，我会进一步建立固定栏目，加强评论区运营，并持续围绕标题、封面和发布时间开展更系统的 A/B 测试，而不仅仅关注播放量，更关注互动率、收藏率和转粉率等能够反映内容质量的指标。</p>
+          </div>
+        </article>
+      </div>
+      </section>
+
+      <section class="section showcase-section" id="section-visual" data-section="visual">
+      <div class="section-head">
+        <h2>视觉设计</h2>
+        <p>横向滚动浏览系列视觉，点击海报查看项目详情。</p>
+      </div>
+      <div class="showcase-rail">
+        <article class="showcase-card visual-intro-card" data-initial-focus="true">
+          <div class="visual-intro">
+            <div class="visual-intro-copy">
+              <p class="visual-intro-label">VISUAL DESIGN</p>
+              <h3>搜狐OTT专题设计</h3>
+              <div class="visual-intro-summary">
+                <p>这些专题海报不仅承担视觉展示的作用，也是搜狐OTT首页专题运营的重要入口。</p>
+                <p>每个专题均围绕影片内容提炼独立的视觉概念，通过统一而具有辨识度的设计语言强化专题调性。同时结合首页运营场景，采用高识别度标题、明确的信息层级与差异化配色，使用户能够快速完成主题识别，并提升专题入口的吸引力。</p>
+              </div>
+              <div class="design-principles">
+                <p>Design Principles</p>
+                <div class="principle-list">
+                  <div class="principle-item">
+                    <strong>Theme-driven Design</strong>
+                    <span>围绕影片内容提炼独立视觉概念，而非套用统一模板。</span>
+                  </div>
+                  <div class="principle-item">
+                    <strong>Fast Recognition</strong>
+                    <span>采用高识别度标题、构图与配色，帮助用户快速理解专题主题。</span>
+                  </div>
+                  <div class="principle-item">
+                    <strong>Visual Consistency</strong>
+                    <span>统一整体设计语言，同时根据不同影片类型建立差异化视觉风格。</span>
+                  </div>
+                  <div class="principle-item">
+                    <strong>Homepage Experience</strong>
+                    <span>结合搜狐OTT首页展示场景控制信息密度，提高专题入口浏览效率。</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <a class="showcase-card image-card poster-project-link" href="poster/red-classic/index.html" style="--card-w: 540px">
+          <img src="assets/sohu-red-classic-poster.jpg" alt="红色经典 惩恶扬善专题效果图">
+          <figcaption>红色经典<br>惩恶扬善</figcaption>
+        </a>
+        <a class="showcase-card image-card poster-project-link" href="poster/legend/index.html" style="--card-w: 540px">
+          <img src="assets/sohu-legend-poster.jpg" alt="经典人物 光影传奇专题效果图">
+          <figcaption>经典人物<br>光影传奇</figcaption>
+        </a>
+        <a class="showcase-card image-card poster-project-link" href="poster/chaos-heroes/index.html" style="--card-w: 540px">
+          <img src="assets/sohu-chaos-heroes-poster.jpg" alt="乱世英雄乱世情专题效果图">
+          <figcaption>乱世英雄<br>乱世情</figcaption>
+        </a>
+        <a class="showcase-card image-card poster-project-link" href="poster/eye-feast/index.html" style="--card-w: 540px">
+          <img src="assets/sohu-eye-feast-poster.jpg" alt="大饱眼福 入股不亏专题效果图">
+          <figcaption>大饱眼福<br>入股不亏</figcaption>
+        </a>
+        <a class="showcase-card image-card poster-project-link" href="poster/high-score/index.html" style="--card-w: 540px">
+          <img src="assets/sohu-high-score-poster.jpg" alt="高分佳作专题效果图">
+          <figcaption>高分佳作</figcaption>
+        </a>
+        <a class="showcase-card image-card poster-project-link" href="poster/kids/index.html" style="--card-w: 540px">
+          <img src="assets/sohu-family-poster.jpg" alt="大人小孩都爱看专题效果图">
+          <figcaption>大人小孩<br>都爱看</figcaption>
+        </a>
+        <a class="showcase-card image-card poster-project-link" href="poster/disaster/index.html" style="--card-w: 540px">
+          <img src="assets/sohu-disaster-poster.jpg" alt="胆战心惊的灾难电影专题效果图">
+          <figcaption>胆战心惊的<br>灾难电影</figcaption>
+        </a>
+        <a class="showcase-card image-card poster-project-link" href="poster/wild-kingdom/index.html" style="--card-w: 540px">
+          <img src="assets/sohu-wild-kingdom-poster.jpg" alt="野蛮王国 畅看全季专题效果图">
+          <figcaption>野蛮王国<br>畅看全季</figcaption>
+        </a>
+      </div>
+      <span class="showcase-hint">横向滚动浏览 / 点击海报查看详情</span>
+      </section>
+
+      <section class="section" id="section-strategy" data-section="strategy">
+      <div class="section-head">
+        <h2>方案与项目</h2>
+      </div>
+      <div class="deck-board">
+        <article class="deck-project">
+          <div class="deck-copy">
+            <p class="deck-kicker">Project 01 / Brand Strategy</p>
+            <h3>沃尔沃 XC90<br>户外投放方案</h3>
+            <p>围绕沃尔沃 XC90 的目标人群、户外媒介触点和城市投放策略，完成从洞察、场景到结案复盘的完整方案表达。</p>
+            <div class="deck-meta">
+              <span>Volvo XC90</span>
+              <span>Outdoor Media</span>
+              <span>26 Slides</span>
+            </div>
+            <span class="deck-detail-hint">点击封面查看完整项目</span>
+          </div>
+          <a class="deck-cover-link" href="deck/volvo/index.html" aria-label="查看沃尔沃 XC90 Project 详情">
+            <img src="deck/volvo/slide01.jpg" alt="沃尔沃 XC90 户外投放方案封面">
+          </a>
+        </article>
+        <article class="deck-project deck-placeholder" aria-label="预留项目">
+          <div class="deck-copy">
+            <p class="deck-kicker">Project 02 / Coming Soon</p>
+            <h3>Next<br>Project</h3>
+            <span class="deck-detail-hint">预留项目位置</span>
+          </div>
+          <div class="deck-empty" aria-hidden="true"></div>
+        </article>
+      </div>
+      </section>
+    </main>
+
+    <nav class="bottom-compass" aria-label="作品分类罗盘">
+      <button class="compass-word word-home active nav-trigger" data-section="home">HOME</button>
+      <button class="compass-word word-video nav-trigger" data-section="video">VIDEO</button>
+      <button class="compass-word word-operation nav-trigger" data-section="operation">OPERATION</button>
+      <button class="compass-word word-visual nav-trigger" data-section="visual">VISUAL</button>
+      <button class="compass-word word-strategy nav-trigger" data-section="strategy">PROJECT</button>
+      <div class="filter-row" aria-hidden="true">
+        <span class="filter-pill active" data-filter="home">START</span>
+        <span class="filter-pill" data-filter="video">VIDEO</span>
+        <span class="filter-pill" data-filter="operation">SOCIAL</span>
+        <span class="filter-pill" data-filter="visual">VISUAL</span>
+        <span class="filter-pill" data-filter="strategy">PROJECT</span>
+      </div>
+      <div class="needle" aria-hidden="true"><span class="needle-dot"></span></div>
+    </nav>
+  </div>
+
+  <section class="contact" id="contact">
+    <div>
+      <p class="eyebrow">Available for content operation roles</p>
+      <h2>期待把好选题做成好内容。</h2>
+      <p>崔子芊，中国传媒大学网络与新媒体方向。关注社媒内容、视频表达、品牌传播与用户洞察。</p>
+    </div>
+    <a class="button primary" href="mailto:cuizq32617@126.com">cuizq32617@126.com</a>
+  </section>
+
+  <footer>
+    Portfolio draft from local materials. 视频和图片仅用于求职作品展示；公开发布前建议压缩视频并确认第三方素材授权边界。
+  </footer>
+
+  <script>
+    (() => {
+      const loader = document.getElementById("site-loader");
+      const nameIntro = document.getElementById("name-intro");
+      const percent = document.getElementById("loader-percent");
+      const word = document.getElementById("loader-word");
+      const typed = document.getElementById("intro-typed");
+      if (!loader || !nameIntro || !percent || !word || !typed) {
+        loader?.remove();
+        nameIntro?.remove();
+        document.body.classList.remove("is-loading");
+        document.body.classList.remove("is-intro-sequence");
+        return;
+      }
+
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const words = ["STRATEGY", "VISUAL", "VIDEO", "OPERATION"];
+      const titleText = "Cui Ziqian Portfolio";
+      const characters = Array.from(titleText);
+      const timing = reducedMotion
+        ? {
+            wordStep: 220,
+            progressDuration: 850,
+            loaderEnd: 880,
+            loaderFade: 160,
+            blank: 120,
+            titleHold: 260,
+            introFade: 180
+          }
+        : {
+            wordStep: 450,
+            progressDuration: 1800,
+            loaderEnd: 1800,
+            loaderFade: 300,
+            blank: 300,
+            cursorLead: 150,
+            typing: 1500,
+            typedHold: 450,
+            settle: 650,
+            finalHold: 150,
+            introFade: 350
+          };
+      let startTime = null;
+      let currentWord = 0;
+      let sequenceStarted = false;
+      let typedCount = 0;
+      let typingFinished = false;
+
+      const changeWord = (nextWord) => {
+        word.classList.add("is-changing");
+        window.setTimeout(() => {
+          word.textContent = nextWord;
+          word.classList.remove("is-changing");
+        }, reducedMotion ? 45 : 150);
+      };
+
+      const revealSite = () => {
+        nameIntro.classList.add("is-leaving");
+        document.body.classList.remove("is-loading");
+        document.body.classList.remove("is-intro-sequence");
+        document.body.classList.add("site-is-revealing");
+        window.setTimeout(() => {
+          nameIntro.remove();
+          document.body.classList.remove("site-is-revealing");
+        }, timing.introFade);
+      };
+
+      const appendCharacters = (count) => {
+        while (typedCount < count && typedCount < characters.length) {
+          const character = document.createElement("span");
+          character.className = "typed-character";
+          character.textContent = characters[typedCount];
+          typed.appendChild(character);
+          typedCount += 1;
+        }
+      };
+
+      const finishTyping = () => {
+        if (typingFinished) return;
+        typingFinished = true;
+        window.setTimeout(() => {
+          nameIntro.classList.add("is-cursor-hidden", "is-settling");
+          window.setTimeout(() => {
+            window.setTimeout(revealSite, timing.finalHold);
+          }, timing.settle);
+        }, timing.typedHold);
+      };
+
+      const typeTitle = (typingStart) => {
+        const tickTyping = (timestamp) => {
+          const elapsed = timestamp - typingStart;
+          const count = Math.min(
+            characters.length,
+            Math.floor((elapsed / timing.typing) * characters.length) + 1
+          );
+          appendCharacters(count);
+
+          if (count >= characters.length) {
+            finishTyping();
+            return;
+          }
+          window.requestAnimationFrame(tickTyping);
+        };
+        window.requestAnimationFrame(tickTyping);
+      };
+
+      const showTitlePage = () => {
+        loader.remove();
+        window.setTimeout(() => {
+          if (reducedMotion) {
+            appendCharacters(characters.length);
+            nameIntro.classList.add("is-reduced-title");
+            window.setTimeout(revealSite, timing.titleHold);
+            return;
+          }
+
+          nameIntro.classList.add("is-cursor-ready");
+          window.setTimeout(() => {
+            typeTitle(performance.now());
+          }, timing.cursorLead);
+        }, timing.blank);
+      };
+
+      const tickLoader = (timestamp) => {
+        if (startTime === null) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        percent.textContent = String(
+          Math.min(100, Math.round((elapsed / timing.progressDuration) * 100))
+        );
+
+        const nextWord = Math.min(
+          words.length - 1,
+          Math.floor(elapsed / timing.wordStep)
+        );
+        if (nextWord !== currentWord) {
+          currentWord = nextWord;
+          changeWord(words[currentWord]);
+        }
+
+        if (!sequenceStarted && elapsed >= timing.loaderEnd) {
+          sequenceStarted = true;
+          percent.textContent = "100";
+          nameIntro.setAttribute("aria-hidden", "false");
+          nameIntro.classList.add("is-active");
+          loader.classList.add("is-leaving");
+          window.setTimeout(showTitlePage, timing.loaderFade);
+          return;
+        }
+
+        window.requestAnimationFrame(tickLoader);
+      };
+
+      window.requestAnimationFrame(tickLoader);
+    })();
+
+    const state = {
+      home: {
+        angle: -90,
+        title: "个人简介",
+        desc: "点击底部文字进入不同作品页。",
+        preview: "assets/profile-photo.png"
+      },
+      video: {
+        angle: -130,
+        title: "视频策划与剪辑",
+        desc: "海外社媒短视频、钧正平工作室纪念视频，可直接播放。",
+        preview: "assets/china-daily-yearend.png"
+      },
+      operation: {
+        angle: -158,
+        title: "内容运营与增长",
+        desc: "从 0 到 280 万播放的账号冷启动实验。",
+        preview: "assets/mbti-profile.png"
+      },
+      visual: {
+        angle: -50,
+        title: "搜狐OTT专题效果图",
+        desc: "搜狐视频专题包装与片单视觉效果图。",
+        preview: "assets/sohu-high-score-poster.jpg"
+      },
+      strategy: {
+        angle: -24,
+        title: "Project 方案展示",
+        desc: "品牌策略、投放方案与汇报型 Project。",
+        preview: "deck/volvo/slide01.jpg"
+      }
+    };
+
+    const root = document.documentElement;
+    const triggers = document.querySelectorAll(".nav-trigger");
+    const sections = document.querySelectorAll(".home-page, .section");
+    const filterPills = document.querySelectorAll(".filter-pill");
+    const activeTitle = document.getElementById("activeTitle");
+    const activeDesc = document.getElementById("activeDesc");
+    const heroPreview = document.getElementById("heroPreview");
+    const compass = document.querySelector(".bottom-compass");
+    let turnTimer;
+    let spinTurns = 0;
+    let currentSection = "home";
+    const fixedNeedleAngle = -31;
+    const compassOrder = ["operation", "video", "home", "visual", "strategy"];
+
+    function getCompassSlots() {
+      if (window.innerWidth <= 680) {
+        return {
+          operation: { left: "calc(50% - 170px)", bottom: "18px" },
+          video: { left: "calc(50% - 116px)", bottom: "42px" },
+          home: { left: "calc(50% - 30px)", bottom: "58px" },
+          visual: { left: "calc(50% + 62px)", bottom: "42px" },
+          strategy: { left: "calc(50% + 84px)", bottom: "18px" }
+        };
+      }
+      if (window.innerWidth <= 980) {
+        return {
+          operation: { left: "calc(50% - 222px)", bottom: "22px" },
+          video: { left: "calc(50% - 150px)", bottom: "52px" },
+          home: { left: "calc(50% - 36px)", bottom: "68px" },
+          visual: { left: "calc(50% + 78px)", bottom: "52px" },
+          strategy: { left: "calc(50% + 120px)", bottom: "22px" }
+        };
+      }
+      return {
+        operation: { left: "calc(50% - 262px)", bottom: "22px" },
+        video: { left: "calc(50% - 184px)", bottom: "54px" },
+        home: { left: "calc(50% - 42px)", bottom: "74px" },
+        visual: { left: "calc(50% + 96px)", bottom: "54px" },
+        strategy: { left: "calc(50% + 150px)", bottom: "22px" }
+      };
+    }
+
+    function positionCompassWords(activeName) {
+      const compassSlots = getCompassSlots();
+      const activeIndex = compassOrder.indexOf(activeName);
+      const visualIndex = compassOrder.indexOf("visual");
+      const shift = visualIndex - (activeIndex === -1 ? compassOrder.indexOf("home") : activeIndex);
+
+      compassOrder.forEach((name, index) => {
+        const slotName = compassOrder[(index + shift + compassOrder.length) % compassOrder.length];
+        const slot = { ...compassSlots[slotName] };
+        if (activeName === "home" && name === "operation") {
+          if (window.innerWidth <= 680) {
+            slot.left = "calc(50% - 132px)";
+          } else if (window.innerWidth <= 980) {
+            slot.left = "calc(50% - 164px)";
+          } else {
+            slot.left = "calc(50% - 192px)";
+          }
+        }
+        if (activeName === "operation" && name === "strategy") {
+          if (window.innerWidth <= 680) {
+            slot.left = "calc(50% - 34px)";
+          } else if (window.innerWidth <= 980) {
+            slot.left = "calc(50% - 38px)";
+          } else {
+            slot.left = "calc(50% - 42px)";
+          }
+        }
+        if (activeName === "operation" && name === "operation") {
+          if (window.innerWidth <= 680) {
+            slot.left = "calc(50% + 46px)";
+          } else if (window.innerWidth <= 980) {
+            slot.left = "calc(50% + 62px)";
+          } else {
+            slot.left = "calc(50% + 76px)";
+          }
+        }
+        if (activeName === "video" && name === "operation") {
+          if (window.innerWidth <= 680) {
+            slot.left = "calc(50% - 70px)";
+          } else if (window.innerWidth <= 980) {
+            slot.left = "calc(50% - 88px)";
+          } else {
+            slot.left = "calc(50% - 104px)";
+          }
+        }
+        if (activeName === "video" && name === "strategy") {
+          if (window.innerWidth <= 680) {
+            slot.left = "calc(50% - 154px)";
+          } else if (window.innerWidth <= 980) {
+            slot.left = "calc(50% - 184px)";
+          } else {
+            slot.left = "calc(50% - 214px)";
+          }
+        }
+        document.querySelectorAll(`.compass-word[data-section="${name}"]`).forEach((word) => {
+          word.style.left = slot.left;
+          word.style.bottom = slot.bottom;
+        });
+      });
+    }
+
+    function setSection(name, animateSpin = true) {
+      const next = state[name] || state.video;
+      currentSection = state[name] ? name : "video";
+      if (animateSpin) spinTurns += 1;
+      root.style.setProperty("--needle-angle", `${fixedNeedleAngle + spinTurns * 360}deg`);
+      const tilt = animateSpin ? 6 : 0;
+      compass.style.setProperty("--compass-tilt", `${tilt}deg`);
+      compass.classList.add("is-turning");
+      clearTimeout(turnTimer);
+      turnTimer = setTimeout(() => {
+        compass.style.setProperty("--compass-tilt", "0deg");
+        compass.classList.remove("is-turning");
+      }, 520);
+      if (activeTitle) activeTitle.textContent = next.title;
+      if (activeDesc) activeDesc.textContent = next.desc;
+      if (heroPreview) heroPreview.src = next.preview;
+      positionCompassWords(currentSection);
+
+      triggers.forEach((item) => {
+        item.classList.toggle("active", item.dataset.section === name);
+      });
+      filterPills.forEach((item) => {
+        item.classList.toggle("active", item.dataset.filter === name);
+      });
+      sections.forEach((section) => {
+        section.classList.toggle("active", section.dataset.section === name);
+      });
+
+      document.querySelectorAll(".section.active .showcase-rail").forEach((rail) => {
+        if (name === "visual") {
+          if (!restorePosterScroll(rail)) centerInitialShowcaseItem(rail);
+        } else if (name === "video") {
+          centerInitialShowcaseItem(rail);
+        }
+        updateShowcaseDepth(rail);
+      });
+
+      history.replaceState(null, "", `#${name}`);
+    }
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => setSection(trigger.dataset.section));
+    });
+    window.addEventListener("resize", () => positionCompassWords(currentSection));
+
+    const interactiveSelector = "video, button, a, input, textarea, select, label, [contenteditable='true'], [role='button']";
+    function isInteractiveTarget(target) {
+      return Boolean(target.closest?.(interactiveSelector));
+    }
+
+    function getOriginalCards(rail) {
+      return Array.from(rail.querySelectorAll(".showcase-card:not([data-clone])"));
+    }
+
+    function syncWrapMetrics(rail) {
+      const count = Number(rail.dataset.wrapCount || 0);
+      if (!count) return;
+      const cards = rail.querySelectorAll(".showcase-card");
+      const firstMiddle = cards[count];
+      const firstAfter = cards[count * 2];
+      if (!firstMiddle || !firstAfter) return;
+      rail.dataset.wrapStart = String(firstMiddle.offsetLeft);
+      rail.dataset.wrapWidth = String(firstAfter.offsetLeft - firstMiddle.offsetLeft);
+    }
+
+    function wrapIfNeeded(rail) {
+      const wrapWidth = Number(rail.dataset.wrapWidth || 0);
+      if (!wrapWidth) return 0;
+      const before = rail.scrollLeft;
+      const wrapStart = Number(rail.dataset.wrapStart || 0);
+      const lower = wrapStart - wrapWidth * 0.55;
+      const upper = wrapStart + wrapWidth * 1.45;
+      if (rail.scrollLeft < lower) {
+        rail.scrollLeft += wrapWidth;
+      } else if (rail.scrollLeft > upper) {
+        rail.scrollLeft -= wrapWidth;
+      }
+      return rail.scrollLeft - before;
+    }
+
+    function setupWrapRail(rail) {
+      if (rail.dataset.wrapReady) return;
+      const originals = Array.from(rail.children).filter((child) => child.classList?.contains("showcase-card"));
+      rail.dataset.wrapCount = String(originals.length);
+      originals.forEach((card) => {
+        const clone = card.cloneNode(true);
+        clone.dataset.clone = "after";
+        clone.querySelectorAll("video").forEach((video) => {
+          delete video.dataset.prepared;
+          video.removeAttribute("controls");
+        });
+        rail.appendChild(clone);
+      });
+      originals.slice().reverse().forEach((card) => {
+        const clone = card.cloneNode(true);
+        clone.dataset.clone = "before";
+        clone.querySelectorAll("video").forEach((video) => {
+          delete video.dataset.prepared;
+          video.removeAttribute("controls");
+        });
+        rail.insertBefore(clone, rail.firstChild);
+      });
+      rail.dataset.wrapReady = "true";
+      rail.querySelectorAll("video").forEach(prepareVideo);
+      syncWrapMetrics(rail);
+    }
+
+    function prepareVideo(video) {
+      if (video.dataset.prepared) return;
+      video.dataset.prepared = "true";
+      const card = video.closest(".showcase-card");
+      const showControls = () => {
+        video.setAttribute("controls", "");
+      };
+      const hideControls = () => {
+        if (card?.matches(":hover") || document.activeElement === video) return;
+        video.removeAttribute("controls");
+      };
+      video.removeAttribute("controls");
+      const playButton = card?.querySelector(".video-play-toggle") || document.createElement("button");
+      if (card && !playButton.classList.contains("video-play-toggle")) {
+        playButton.type = "button";
+        playButton.className = "video-play-toggle";
+        playButton.setAttribute("aria-label", "播放视频");
+        playButton.textContent = "▶";
+        card.appendChild(playButton);
+      }
+      playButton?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        showControls();
+        if (video.paused) {
+          video.play();
+        } else {
+          video.pause();
+        }
+      });
+      card?.addEventListener("pointerenter", showControls);
+      card?.addEventListener("pointerleave", hideControls);
+      video.addEventListener("focus", showControls);
+      video.addEventListener("blur", hideControls);
+      video.addEventListener("loadedmetadata", () => {
+        if (video.videoWidth && video.videoHeight) {
+          const ratio = video.videoWidth / video.videoHeight;
+          video.style.setProperty("--video-ratio", `${video.videoWidth} / ${video.videoHeight}`);
+          video.style.setProperty("--media-ratio", ratio.toFixed(5));
+          video.classList.toggle("is-portrait", ratio < 0.9);
+          video.classList.toggle("is-landscape", ratio >= 0.9);
+          if (ratio < 0.9) {
+            video.closest(".showcase-card")?.classList.add("is-portrait");
+          }
+          const rail = video.closest(".showcase-rail");
+          if (rail) {
+            syncWrapMetrics(rail);
+            updateShowcaseDepth(rail);
+          }
+        }
+      }, { once: true });
+
+      video.addEventListener("play", () => {
+        showControls();
+        card?.classList.add("is-playing");
+        document.querySelectorAll(".video-card video, .showcase-card video").forEach((other) => {
+          if (other !== video) other.pause();
+        });
+      });
+      video.addEventListener("pause", () => {
+        card?.classList.remove("is-playing");
+      });
+      video.addEventListener("ended", () => {
+        card?.classList.remove("is-playing");
+      });
+    }
+
+    function centerInitialShowcaseItem(rail) {
+      syncWrapMetrics(rail);
+      const targetCard = rail.querySelector(".showcase-card[data-initial-focus]:not([data-clone])") || getOriginalCards(rail)[0] || rail.querySelector(".showcase-card");
+      if (!targetCard) return;
+      const left = targetCard.offsetLeft - (rail.clientWidth - targetCard.offsetWidth) / 2;
+      rail.scrollLeft = Math.max(0, left);
+      wrapIfNeeded(rail);
+    }
+
+    function restorePosterScroll(rail) {
+      if (sessionStorage.getItem("returningFromPosterDetail") !== "true") return false;
+      const saved = Number(sessionStorage.getItem("posterRailScroll"));
+      sessionStorage.removeItem("returningFromPosterDetail");
+      if (!Number.isFinite(saved)) return false;
+      syncWrapMetrics(rail);
+      rail.scrollLeft = saved;
+      wrapIfNeeded(rail);
+      return true;
+    }
+
+    document.querySelectorAll(".video-card video, .showcase-card video").forEach(prepareVideo);
+
+    function updateShowcaseDepth(rail) {
+      const railBox = rail.getBoundingClientRect();
+      const center = railBox.left + railBox.width / 2;
+      rail.querySelectorAll(".showcase-card").forEach((card) => {
+        const box = card.getBoundingClientRect();
+        const cardCenter = box.left + box.width / 2;
+        const distance = (cardCenter - center) / Math.max(railBox.width / 2, 1);
+        const closeness = Math.max(0, 1 - Math.abs(distance));
+        card.style.setProperty("--focus-scale", (0.88 + closeness * 0.12).toFixed(3));
+        card.style.setProperty("--focus-opacity", (0.74 + closeness * 0.26).toFixed(3));
+        card.style.setProperty("--focus-sat", (0.86 + closeness * 0.14).toFixed(3));
+        card.style.setProperty("--wheel-y", `${(-3 * closeness).toFixed(1)}px`);
+      });
+    }
+
+    const smoothRailState = new WeakMap();
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function getSmoothState(rail) {
+      if (!smoothRailState.has(rail)) {
+        smoothRailState.set(rail, { target: rail.scrollLeft, rafId: null });
+      }
+      return smoothRailState.get(rail);
+    }
+
+    function stopSmoothScroll(rail) {
+      const state = getSmoothState(rail);
+      if (state.rafId) {
+        cancelAnimationFrame(state.rafId);
+        state.rafId = null;
+      }
+      state.target = rail.scrollLeft;
+    }
+
+    function smoothScrollToTarget(rail) {
+      const state = getSmoothState(rail);
+      const maxScroll = rail.scrollWidth - rail.clientWidth;
+      state.target = clamp(state.target, 0, maxScroll);
+      const distance = state.target - rail.scrollLeft;
+
+      if (Math.abs(distance) < 0.5) {
+        rail.scrollLeft = state.target;
+        const adjustment = wrapIfNeeded(rail);
+        if (adjustment) state.target += adjustment;
+        updateShowcaseDepth(rail);
+        state.rafId = null;
+        return;
+      }
+
+      rail.scrollLeft += distance * 0.16;
+      const adjustment = wrapIfNeeded(rail);
+      if (adjustment) state.target += adjustment;
+      updateShowcaseDepth(rail);
+      state.rafId = requestAnimationFrame(() => smoothScrollToTarget(rail));
+    }
+
+    document.addEventListener("wheel", (event) => {
+      const activeShowcase = document.querySelector(".showcase-section.active");
+      if (!activeShowcase || !activeShowcase.contains(event.target)) return;
+      const rail = activeShowcase.querySelector(".showcase-rail");
+      if (!rail) return;
+      const maxScroll = rail.scrollWidth - rail.clientWidth;
+      if (maxScroll <= 0) return;
+      event.preventDefault();
+      const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+      const state = getSmoothState(rail);
+      if (!state.rafId) state.target = rail.scrollLeft;
+      state.target = clamp(state.target + delta * 1.35, 0, maxScroll);
+      if (!state.rafId) {
+        state.rafId = requestAnimationFrame(() => smoothScrollToTarget(rail));
+      }
+    }, { passive: false, capture: true });
+
+    document.querySelectorAll(".showcase-rail").forEach((rail) => {
+      setupWrapRail(rail);
+      let ticking = false;
+      let isDragging = false;
+      let dragMoved = false;
+      let suppressClick = false;
+      let startX = 0;
+      let startScrollLeft = 0;
+
+      const requestDepthUpdate = () => {
+        updateShowcaseDepth(rail);
+      };
+
+      rail.addEventListener("pointerdown", (event) => {
+        if (event.button !== 0 || isInteractiveTarget(event.target)) return;
+        stopSmoothScroll(rail);
+        isDragging = true;
+        dragMoved = false;
+        startX = event.clientX;
+        startScrollLeft = rail.scrollLeft;
+        rail.classList.add("is-dragging");
+        rail.setPointerCapture(event.pointerId);
+      });
+
+      rail.addEventListener("pointermove", (event) => {
+        if (!isDragging) return;
+        const distance = event.clientX - startX;
+        if (Math.abs(distance) > 3) {
+          dragMoved = true;
+          suppressClick = true;
+        }
+        event.preventDefault();
+        const intendedLeft = startScrollLeft - distance;
+        rail.scrollLeft = intendedLeft;
+        wrapIfNeeded(rail);
+        startScrollLeft += rail.scrollLeft - intendedLeft;
+        updateShowcaseDepth(rail);
+      });
+
+      rail.addEventListener("pointerup", (event) => {
+        if (!isDragging) return;
+        isDragging = false;
+        rail.classList.remove("is-dragging");
+        if (rail.hasPointerCapture(event.pointerId)) {
+          rail.releasePointerCapture(event.pointerId);
+        }
+        if (dragMoved) {
+          setTimeout(() => {
+            suppressClick = false;
+          }, 0);
+        }
+      });
+
+      rail.addEventListener("pointercancel", (event) => {
+        isDragging = false;
+        rail.classList.remove("is-dragging");
+        if (rail.hasPointerCapture(event.pointerId)) {
+          rail.releasePointerCapture(event.pointerId);
+        }
+      });
+
+      rail.addEventListener("scroll", requestDepthUpdate, { passive: true });
+      window.addEventListener("resize", () => {
+        syncWrapMetrics(rail);
+        requestDepthUpdate();
+      });
+
+      rail.querySelectorAll(".showcase-card").forEach((card) => {
+        card.addEventListener("click", (event) => {
+          if (suppressClick || isInteractiveTarget(event.target)) return;
+          rail.querySelectorAll(".showcase-card").forEach((item) => item.classList.remove("is-active"));
+          card.classList.add("is-active");
+          card.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
+        });
+      });
+
+      rail.querySelectorAll(".poster-project-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          sessionStorage.setItem("posterRailScroll", String(rail.scrollLeft));
+        });
+      });
+
+      updateShowcaseDepth(rail);
+    });
+
+    const initial = location.hash.replace("#", "");
+    setSection(state[initial] ? initial : "home", false);
+    window.addEventListener("load", () => {
+      if (currentSection !== "video" && currentSection !== "visual") return;
+      document.querySelectorAll(".section.active .showcase-rail").forEach((rail) => {
+        if (currentSection === "visual") {
+          if (!restorePosterScroll(rail)) centerInitialShowcaseItem(rail);
+        } else {
+          centerInitialShowcaseItem(rail);
+        }
+        updateShowcaseDepth(rail);
+      });
+    }, { once: true });
+  </script>
+</body>
+</html>
+
