@@ -1,0 +1,250 @@
+:root {
+  --paper: #f3f0ea;
+  --ink: #11100f;
+  --muted: #77716a;
+  --line: #ddd8ce;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: auto; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Arial, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  animation: pageFade 420ms ease both;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.back-link,
+.side-link {
+  position: fixed;
+  z-index: 10;
+  color: rgba(17, 16, 15, 0.52);
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  background: transparent;
+  transition: color 180ms ease;
+}
+
+.back-link {
+  top: 30px;
+  left: 36px;
+}
+
+.side-link {
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(18px, 1.8vw, 30px);
+}
+
+.side-link.previous { left: 34px; }
+.side-link.next { right: 34px; }
+
+.back-link:hover,
+.side-link:hover { color: var(--ink); }
+
+.project-page {
+  min-height: 100vh;
+}
+
+.detail-hero {
+  min-height: 84vh;
+  padding: 88px clamp(28px, 7vw, 120px) 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+}
+
+.detail-hero img {
+  display: block;
+  width: min(100%, 1120px);
+  max-height: 72vh;
+  object-fit: contain;
+  opacity: 0;
+  animation: heroFade 700ms ease 120ms both;
+}
+
+.detail-hero p {
+  margin: 0;
+  color: rgba(17, 16, 15, 0.34);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.project-info {
+  width: min(78vw, 1120px);
+  margin: 0 auto;
+  padding: clamp(80px, 11vw, 150px) 0 clamp(70px, 9vw, 130px);
+  display: grid;
+  grid-template-columns: minmax(260px, 0.82fr) minmax(360px, 1.18fr);
+  gap: clamp(36px, 6vw, 96px);
+  border-top: 1px solid var(--line);
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(46px, 7vw, 112px);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.year {
+  margin: 28px 0 0;
+  color: var(--muted);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+}
+
+dl {
+  margin: 0;
+  display: grid;
+  gap: 28px;
+}
+
+dt {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+dd {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.description {
+  margin: 0;
+  max-width: 38em;
+  color: #47433e;
+  font-size: clamp(18px, 1.5vw, 24px);
+  line-height: 1.75;
+}
+
+.project-copy {
+  display: grid;
+  align-content: end;
+  gap: clamp(30px, 4vw, 52px);
+}
+
+.keyword-label {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.keywords {
+  margin: 0;
+  color: #47433e;
+  font-size: clamp(15px, 1.15vw, 18px);
+  line-height: 1.7;
+}
+
+.poster-gallery {
+  width: min(78vw, 1120px);
+  margin: 0 auto;
+  padding: 0 0 clamp(100px, 13vw, 170px);
+}
+
+.gallery-item {
+  margin: 0 0 clamp(100px, 12vw, 160px);
+  text-align: center;
+}
+
+.gallery-item img {
+  display: block;
+  width: min(100%, 960px);
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  transition: transform 260ms ease;
+}
+
+.gallery-item img:hover {
+  transform: scale(1.01);
+}
+
+.project-nav {
+  width: min(78vw, 1120px);
+  margin: 0 auto;
+  padding: 0 0 80px;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  color: rgba(17, 16, 15, 0.48);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(22px, 2.2vw, 38px);
+}
+
+.project-nav a {
+  transition: color 180ms ease;
+}
+
+.project-nav a:hover {
+  color: var(--ink);
+}
+
+@keyframes pageFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes heroFade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 860px) {
+  .back-link {
+    left: 22px;
+    top: 22px;
+  }
+
+  .side-link {
+    display: none;
+  }
+
+  .detail-hero {
+    min-height: 78vh;
+    padding: 74px 20px 28px;
+  }
+
+  .project-info {
+    width: min(88vw, 680px);
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .poster-gallery,
+  .project-nav {
+    width: min(88vw, 680px);
+  }
+
+  .project-nav {
+    font-size: 24px;
+  }
+}
