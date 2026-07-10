@@ -372,17 +372,36 @@
       z-index: 28;
       min-height: 132px;
       border-top: 0;
-      background: var(--paper);
+      background: transparent;
+      background-color: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+      filter: none;
       overflow: hidden;
       pointer-events: none;
       --compass-tilt: 0deg;
     }
-    .bottom-compass::before {
+    .bottom-compass::before,
+    .bottom-compass::after {
+      content: none;
       display: none;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
     }
     .compass-word {
       position: absolute;
       z-index: 4;
+      appearance: none;
+      margin: 0;
+      padding: 1px 6px;
+      border: 1px solid transparent;
+      border-radius: 0;
+      background: transparent;
+      background-color: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+      filter: none;
       color: rgba(25, 24, 22, 0.18);
       font-family: Georgia, "Times New Roman", serif;
       font-size: clamp(17px, 1.7vw, 28px);
@@ -396,6 +415,7 @@
       text-shadow: none;
     }
     .compass-word.active {
+      border-color: currentColor;
       color: var(--ink);
       opacity: 1;
       transform: rotate(var(--compass-tilt)) translateY(-2px);
@@ -458,7 +478,7 @@
       transform: translate(-50%, -50%);
       border-radius: 50%;
       background: #6c6861;
-      box-shadow: 0 0 0 2px rgba(255,255,255,0.35);
+      box-shadow: none;
     }
 
     .bottom-compass.is-turning .compass-word {
