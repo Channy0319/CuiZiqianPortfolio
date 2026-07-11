@@ -1080,20 +1080,24 @@
     .showcase-section .section-head p {
       display: none;
     }
-    #section-visual .section-head p {
-      display: block;
-      max-width: 460px;
-      color: rgba(71, 67, 62, 0.76);
-      font-size: clamp(15px, 1.12vw, 19px);
-      line-height: 1.7;
-      text-align: right;
-    }
+    #section-video .section-head,
     #section-visual .section-head {
-      display: block;
-      top: clamp(28px, 5vh, 52px);
+      display: flex;
+      justify-content: flex-start;
+      align-items: baseline;
+      gap: clamp(14px, 1.8vw, 28px);
+      top: clamp(8px, 1.5vh, 16px);
     }
+    #section-video .section-head p,
     #section-visual .section-head p {
-      display: none;
+      display: block;
+      max-width: none;
+      margin: 0 0 0.12em;
+      color: rgba(71, 67, 62, 0.66);
+      font-size: clamp(12px, 0.85vw, 14px);
+      line-height: 1.4;
+      text-align: left;
+      white-space: nowrap;
     }
     #section-visual {
       background: transparent;
@@ -1791,7 +1795,7 @@
       <section class="section showcase-section" id="section-video" data-section="video">
       <div class="section-head">
         <h2>视频策划与剪辑</h2>
-        <p>横向滚轮浏览作品。靠近中线的内容会自动放大，视频保留原始比例，按播放键可直接预览成片。</p>
+        <p>左右滑动查看更多内容</p>
       </div>
       <div class="showcase-rail">
         <article class="showcase-card video-intro-card" data-initial-focus="true">
@@ -2038,7 +2042,7 @@
       <section class="section showcase-section" id="section-visual" data-section="visual">
       <div class="section-head">
         <h2>视觉设计</h2>
-        <p>横向滚动浏览系列视觉，点击海报查看项目详情。</p>
+        <p>左右滑动查看更多内容</p>
       </div>
       <div class="showcase-rail">
         <article class="showcase-card visual-intro-card" data-initial-focus="true">
