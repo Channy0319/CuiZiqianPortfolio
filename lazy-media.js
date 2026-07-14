@@ -4,6 +4,11 @@
   function revealImage(image) {
     const source = image.dataset.src;
     if (!source) return;
+    const picture = image.closest("picture");
+    picture?.querySelectorAll("source[data-srcset]").forEach((item) => {
+      item.srcset = item.dataset.srcset;
+      item.removeAttribute("data-srcset");
+    });
     image.src = source;
     image.removeAttribute("data-src");
   }
