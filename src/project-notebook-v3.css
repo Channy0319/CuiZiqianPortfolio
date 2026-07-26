@@ -1,0 +1,925 @@
+.project-notebook-v3 {
+  --paper: #f4ead6;
+  --paper-deep: #e8d8bd;
+  --ink: #281a12;
+  --sage: #687157;
+  --caramel: #aa6d35;
+  --taupe: #71604e;
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--ink);
+  background: #7e4b2d url("/assets/wood-desk-background.jpg") right center / 123% auto no-repeat;
+}
+
+.notebook-stage {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  min-height: 100svh;
+  padding: clamp(52px, 6vh, 74px) clamp(82px, 9vw, 150px);
+  place-items: center;
+}
+
+.open-notebook {
+  position: relative;
+  display: grid;
+  grid-template-columns: 39% 61%;
+  width: min(1210px, 86vw);
+  height: min(780px, 88svh);
+  min-height: 680px;
+  transform: rotate(-0.35deg);
+  border: 1px solid rgba(67, 39, 21, 0.48);
+  border-radius: 24px 29px 27px 23px;
+  background: #795334;
+  box-shadow:
+    0 34px 55px rgba(36, 15, 5, 0.42),
+    0 10px 18px rgba(38, 17, 7, 0.34);
+  view-transition-name: notebook-shell;
+}
+
+.open-notebook::before,
+.open-notebook::after {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+}
+
+.open-notebook::before {
+  inset: 8px -13px -12px 10px;
+  transform: rotate(0.55deg);
+  border-radius: 25px 31px 30px 22px;
+  background: #a0784f;
+  box-shadow: 0 9px 13px rgba(40, 18, 8, 0.38);
+}
+
+.open-notebook::after {
+  inset: 4px 5px -6px -8px;
+  border: 2px solid rgba(236, 209, 169, 0.23);
+  border-radius: 25px;
+}
+
+.notebook-page {
+  position: relative;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 34px,
+      rgba(112, 92, 68, 0.1) 35px,
+      transparent 36px
+    ),
+    radial-gradient(circle at 20% 18%, rgba(115, 78, 46, 0.055) 0 0.8px, transparent 1px),
+    var(--paper);
+  background-size: auto, 9px 11px, auto;
+}
+
+.notebook-page-left {
+  padding: clamp(52px, 5.2vw, 74px) clamp(48px, 4.7vw, 70px);
+  border-radius: 21px 3px 4px 19px;
+  box-shadow:
+    inset -20px 0 26px rgba(75, 47, 28, 0.13),
+    inset 2px 0 rgba(255, 255, 255, 0.58);
+}
+
+.notebook-page-left::before,
+.notebook-page-right::before {
+  position: absolute;
+  inset: 13px;
+  border: 1px solid rgba(89, 62, 41, 0.09);
+  border-radius: 13px 2px 2px 12px;
+  content: "";
+  pointer-events: none;
+}
+
+.notebook-page-right {
+  overflow: hidden auto;
+  padding: clamp(38px, 3.6vw, 54px) clamp(40px, 4vw, 62px);
+  border-radius: 3px 22px 19px 4px;
+  box-shadow:
+    inset 20px 0 26px rgba(74, 45, 27, 0.11),
+    inset -2px 0 rgba(97, 64, 39, 0.14);
+}
+
+.notebook-page-left header {
+  position: relative;
+  z-index: 2;
+}
+
+.notebook-page-left header p,
+.right-page-kicker {
+  margin: 0 0 18px;
+  color: #7e4b32;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.notebook-page-left h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(45px, 4.2vw, 68px);
+  font-weight: 500;
+  line-height: 0.94;
+  letter-spacing: -0.055em;
+}
+
+.notebook-page-left header > span {
+  display: block;
+  margin-top: 20px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+}
+
+.approach-note {
+  position: relative;
+  z-index: 2;
+  width: min(230px, 86%);
+  margin-top: clamp(40px, 5.5vh, 58px);
+  padding: 28px 28px 24px;
+  transform: rotate(-2.2deg);
+  border: 1px solid rgba(91, 58, 33, 0.16);
+  border-radius: 4px 8px 5px 3px;
+  background:
+    radial-gradient(circle at 28% 34%, rgba(90, 61, 38, 0.075) 0 0.7px, transparent 0.9px),
+    #e9c98e;
+  background-size: 8px 10px, auto;
+  box-shadow: 0 11px 17px rgba(67, 35, 17, 0.2);
+}
+
+.approach-note::before {
+  position: absolute;
+  top: -10px;
+  left: 45%;
+  width: 64px;
+  height: 20px;
+  transform: translateX(-50%) rotate(2deg);
+  opacity: 0.75;
+  background: #d6ad6c;
+  content: "";
+}
+
+.approach-note span {
+  font-family: Georgia, serif;
+  font-size: 22px;
+}
+
+.approach-note ul {
+  display: grid;
+  margin: 18px 0 0;
+  padding: 0;
+  gap: 8px;
+  list-style: none;
+  font-family: Georgia, serif;
+  font-size: 16px;
+}
+
+.approach-note li::before {
+  margin-right: 9px;
+  content: "·";
+}
+
+.notebook-page-left blockquote {
+  position: absolute;
+  right: 42px;
+  bottom: 58px;
+  left: 56px;
+  margin: 0;
+  color: #4c382c;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(17px, 1.55vw, 23px);
+  font-style: italic;
+  line-height: 1.35;
+}
+
+.notebook-spine {
+  position: absolute;
+  z-index: 8;
+  top: 2%;
+  bottom: 2%;
+  left: 39%;
+  display: flex;
+  width: 42px;
+  flex-direction: column;
+  justify-content: space-around;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.notebook-spine::before {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 8px;
+  transform: translateX(-50%);
+  border-radius: 99px;
+  background: #372b22;
+  box-shadow: 0 0 8px rgba(39, 20, 10, 0.45);
+  content: "";
+}
+
+.notebook-spine span {
+  width: 42px;
+  height: 14px;
+  border: 4px solid #6e5138;
+  border-right-color: #b48a5f;
+  border-left-color: #3c2b20;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: 0 2px 2px rgba(45, 23, 11, 0.28);
+}
+
+.right-page-kicker {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 10px;
+  padding-left: 8px;
+}
+
+.notebook-projects {
+  position: relative;
+  z-index: 2;
+  display: grid;
+}
+
+.notebook-project {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) minmax(205px, 39%);
+  min-height: 176px;
+  padding: 21px 8px;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  border: 0;
+  border-bottom: 1px solid rgba(82, 57, 39, 0.24);
+  color: inherit;
+  background: transparent;
+  text-align: left;
+  transition: background-color 180ms ease, transform 220ms ease;
+}
+
+.notebook-project:first-child {
+  border-top: 1px solid rgba(82, 57, 39, 0.18);
+}
+
+.notebook-project:hover,
+.notebook-project:focus-visible,
+.notebook-project.is-active {
+  transform: translateX(3px);
+  background: rgba(190, 154, 100, 0.1);
+}
+
+.notebook-project:focus-visible {
+  outline: 2px solid #7a5539;
+  outline-offset: 2px;
+}
+
+.project-number {
+  align-self: start;
+  padding-top: 3px;
+  color: var(--sage);
+  font-family: Georgia, serif;
+  font-size: 26px;
+}
+
+.project-copy {
+  display: grid;
+  align-self: stretch;
+  align-content: center;
+}
+
+.project-copy strong {
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.project-copy > span {
+  display: -webkit-box;
+  margin-top: 11px;
+  overflow: hidden;
+  color: #5a4638;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 10px;
+  line-height: 1.7;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.project-copy small {
+  display: flex;
+  margin-top: 12px;
+  align-items: center;
+  color: #785f4d;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.project-copy small i {
+  width: 3px;
+  height: 3px;
+  margin: 0 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.project-cover-frame {
+  position: relative;
+  display: block;
+  overflow: visible;
+  transform: rotate(0.8deg);
+  border: 8px solid #efe3cb;
+  border-bottom-width: 19px;
+  border-radius: 2px;
+  background: #ddd0b9;
+  box-shadow: 0 9px 13px rgba(59, 31, 15, 0.24);
+  transition: transform 240ms ease, box-shadow 240ms ease;
+}
+
+.project-cover-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.project-cover-frame em {
+  position: absolute;
+  right: 4px;
+  bottom: -16px;
+  opacity: 0;
+  color: #76523c;
+  font-size: 7px;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: opacity 180ms ease;
+}
+
+.notebook-project:hover .project-cover-frame,
+.notebook-project:focus-visible .project-cover-frame {
+  transform: translateY(-7px) rotate(-0.4deg);
+  box-shadow: 0 17px 19px rgba(54, 27, 12, 0.31);
+}
+
+.notebook-project:hover .project-cover-frame em,
+.notebook-project:focus-visible .project-cover-frame em {
+  opacity: 1;
+}
+
+.notebook-tabs {
+  position: absolute;
+  z-index: 7;
+  top: 17%;
+  right: -64px;
+  display: grid;
+  gap: 11px;
+}
+
+.notebook-tab {
+  width: 70px;
+  height: 78px;
+  padding-left: 22px;
+  cursor: pointer;
+  transform: translateX(-7px);
+  border: 1px solid rgba(64, 41, 25, 0.35);
+  border-radius: 0 10px 10px 0;
+  color: #f3eadc;
+  box-shadow: 6px 8px 12px rgba(47, 23, 9, 0.28);
+  font-family: Georgia, serif;
+  font-size: 22px;
+  transition: transform 200ms ease, filter 200ms ease;
+}
+
+.notebook-tab:hover,
+.notebook-tab:focus-visible,
+.notebook-tab.is-active {
+  transform: translateX(0);
+  filter: brightness(1.08);
+}
+
+.notebook-tab:focus-visible {
+  outline: 3px solid #f5e8d1;
+}
+
+.notebook-tab-01 {
+  background: var(--sage);
+}
+
+.notebook-tab-02 {
+  background: var(--caramel);
+}
+
+.notebook-tab-03 {
+  background: var(--taupe);
+}
+
+.notebook-back {
+  position: fixed;
+  z-index: 30;
+  top: 24px;
+  right: 27px;
+  display: inline-flex;
+  padding: 9px 14px 9px 11px;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  border: 1px solid rgba(64, 31, 14, 0.22);
+  border-radius: 999px;
+  color: #312017;
+  background: rgba(251, 241, 220, 0.94);
+  box-shadow: 0 8px 18px rgba(48, 22, 9, 0.24);
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.notebook-back:hover,
+.notebook-back:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 11px 21px rgba(48, 22, 9, 0.3);
+}
+
+.notebook-back:focus-visible {
+  outline: 3px solid #fff1d6;
+}
+
+.notebook-hint {
+  position: fixed;
+  z-index: 20;
+  bottom: 22px;
+  left: 50%;
+  margin: 0;
+  padding: 7px 13px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  color: rgba(255, 242, 222, 0.88);
+  background: rgba(48, 24, 12, 0.34);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.notebook-build-stamp {
+  position: fixed;
+  z-index: 20;
+  right: 27px;
+  bottom: 23px;
+  padding: 5px 8px;
+  transform: rotate(-2deg);
+  border: 1px solid rgba(255, 231, 198, 0.46);
+  color: rgba(255, 236, 208, 0.82);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.project-decor {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.project-prop {
+  position: absolute;
+  display: block;
+  aspect-ratio: 1;
+  background-image: url("/assets/craft-table-mini-sprites.png");
+  background-repeat: no-repeat;
+  background-position: var(--mini-x) var(--mini-y);
+  background-size: 406% 406%;
+  filter: drop-shadow(0 10px 8px rgba(38, 17, 7, 0.31));
+}
+
+.project-succulent {
+  --mini-x: 66.666%;
+  --mini-y: 100%;
+  top: 1.5%;
+  left: 1.5%;
+  width: 120px;
+  transform: rotate(-5deg);
+}
+
+.project-coffee {
+  --mini-x: 100%;
+  --mini-y: 100%;
+  top: 17%;
+  left: 0.5%;
+  width: 140px;
+  transform: rotate(4deg);
+}
+
+.project-leaf {
+  --mini-x: 0%;
+  --mini-y: 33.333%;
+  top: 1%;
+  left: 58%;
+  width: 145px;
+  transform: rotate(84deg);
+}
+
+.project-flower {
+  --mini-x: 0%;
+  --mini-y: 0%;
+  top: 36%;
+  left: 0.5%;
+  width: 110px;
+  transform: rotate(-9deg);
+}
+
+.project-binder {
+  --mini-x: 100%;
+  --mini-y: 33.333%;
+  top: 8%;
+  right: 1.5%;
+  width: 118px;
+  transform: rotate(-8deg);
+}
+
+.project-pencil {
+  --mini-x: 33.333%;
+  --mini-y: 100%;
+  top: 34%;
+  right: 2.5%;
+  width: 160px;
+  transform: rotate(11deg);
+}
+
+.project-yarn {
+  --mini-x: 66.666%;
+  --mini-y: 0%;
+  right: 1%;
+  bottom: 17%;
+  width: 78px;
+  transform: rotate(8deg);
+}
+
+.project-crochet-square {
+  position: absolute;
+  right: 1%;
+  bottom: 5%;
+  display: block;
+  width: 74px;
+  aspect-ratio: 1;
+  transform: rotate(-7deg);
+  background-image: url("/assets/craft-table-object-sprites-polished.png");
+  background-repeat: no-repeat;
+  background-position: 57.7% 92%;
+  background-size: 731% 488%;
+  filter: drop-shadow(0 10px 8px rgba(38, 17, 7, 0.31));
+}
+
+.project-button {
+  --mini-x: 66.666%;
+  --mini-y: 66.666%;
+  bottom: 23%;
+  left: 1%;
+  width: 82px;
+  transform: rotate(-7deg);
+}
+
+.project-thread {
+  position: absolute;
+  right: 1.5%;
+  bottom: 1%;
+  width: 220px;
+  height: 180px;
+  transform: rotate(8deg);
+  border: 3px solid transparent;
+  border-top-color: #92905d;
+  border-radius: 50%;
+  opacity: 0.78;
+}
+
+.project-polaroid {
+  position: absolute;
+  bottom: 2%;
+  left: 1.3%;
+  width: 100px;
+  height: 126px;
+  padding: 10px 10px 27px;
+  transform: rotate(8deg);
+  background: #eee1ca;
+  box-shadow: 0 12px 18px rgba(40, 17, 7, 0.28);
+}
+
+.project-polaroid i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background:
+    linear-gradient(rgba(92, 66, 40, 0.12), rgba(92, 66, 40, 0.12)),
+    url("/assets/project-notebook/vintage-plant-photo.png") center / cover;
+  filter: saturate(0.78) sepia(0.16) contrast(0.92);
+}
+
+.project-preview-dialog {
+  width: min(880px, calc(100vw - 40px));
+  padding: 0;
+  border: 0;
+  border-radius: 17px 9px 20px 12px;
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 35px 90px rgba(26, 10, 3, 0.58);
+}
+
+.project-preview-dialog::backdrop {
+  background: rgba(37, 17, 7, 0.58);
+  backdrop-filter: blur(4px);
+}
+
+.project-preview-dialog form {
+  position: relative;
+  display: grid;
+  grid-template-columns: 55% 45%;
+  padding: 28px;
+  gap: 28px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(94, 76, 57, 0.08) 32px),
+    var(--paper);
+}
+
+.project-preview-dialog img {
+  width: 100%;
+  align-self: center;
+  border: 10px solid #eadcc3;
+  box-shadow: 0 14px 24px rgba(46, 23, 10, 0.25);
+}
+
+.project-preview-dialog form > div {
+  display: flex;
+  padding-right: 18px;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.project-preview-dialog p {
+  margin: 0 0 18px;
+  color: #a35d3f;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+}
+
+.project-preview-dialog h2 {
+  margin: 0 0 16px;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: clamp(24px, 3vw, 38px);
+  line-height: 1.2;
+}
+
+.project-preview-dialog div > span {
+  color: #604a3c;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.project-preview-dialog small {
+  margin-top: 24px;
+  color: #856d59;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.project-dialog-number {
+  position: absolute;
+  right: 32px;
+  bottom: 22px;
+  color: rgba(126, 75, 50, 0.18);
+  font-family: Georgia, serif;
+  font-size: 72px;
+}
+
+.project-dialog-close {
+  position: absolute;
+  z-index: 4;
+  top: 12px;
+  right: 13px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  cursor: pointer;
+  border: 0;
+  border-radius: 50%;
+  color: #4d3324;
+  background: rgba(109, 76, 51, 0.12);
+  font-size: 22px;
+}
+
+@media (max-width: 1050px) and (min-width: 761px) {
+  .notebook-stage {
+    padding-right: 62px;
+    padding-left: 44px;
+  }
+
+  .open-notebook {
+    width: min(930px, 91vw);
+  }
+
+  .notebook-page-left {
+    padding-right: 42px;
+    padding-left: 42px;
+  }
+
+  .notebook-page-right {
+    padding-right: 32px;
+    padding-left: 34px;
+  }
+
+  .notebook-project {
+    grid-template-columns: 40px minmax(0, 1fr) 195px;
+  }
+
+  .project-copy > span {
+    -webkit-line-clamp: 2;
+  }
+}
+
+@media (max-width: 760px) {
+  .project-notebook-v3 {
+    overflow-x: clip;
+    overflow-y: visible;
+    background-position: center top;
+    background-size: auto 100%;
+  }
+
+  .project-decor {
+    display: none;
+  }
+
+  .notebook-stage {
+    display: block;
+    min-height: 100svh;
+    padding: 70px 12px 58px;
+  }
+
+  .open-notebook {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    transform: none;
+    border-radius: 17px;
+  }
+
+  .notebook-page {
+    overflow: visible;
+  }
+
+  .notebook-page-left {
+    min-height: 600px;
+    padding: 42px 34px 36px;
+    border-radius: 16px 16px 3px 3px;
+    box-shadow: inset 0 -15px 22px rgba(75, 47, 28, 0.12);
+  }
+
+  .notebook-page-left h1 {
+    font-size: 52px;
+  }
+
+  .approach-note {
+    width: 195px;
+    margin-top: 48px;
+    padding: 24px 23px 20px;
+  }
+
+  .notebook-page-left blockquote {
+    right: 28px;
+    bottom: 35px;
+    left: auto;
+    font-size: 15px;
+  }
+
+  .notebook-page-right {
+    padding: 42px 21px 32px;
+    border-radius: 3px 3px 16px 16px;
+    box-shadow: inset 0 15px 22px rgba(74, 45, 27, 0.11);
+  }
+
+  .notebook-spine {
+    top: 588px;
+    right: 5%;
+    bottom: auto;
+    left: 5%;
+    display: flex;
+    width: auto;
+    height: 34px;
+    flex-direction: row;
+    transform: none;
+  }
+
+  .notebook-spine::before {
+    top: 50%;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    height: 7px;
+    transform: translateY(-50%);
+  }
+
+  .notebook-spine span {
+    width: 14px;
+    height: 34px;
+    border-width: 3px;
+  }
+
+  .notebook-project {
+    grid-template-columns: 34px minmax(0, 1fr);
+    min-height: 0;
+    padding: 24px 5px 30px;
+    gap: 9px;
+  }
+
+  .project-cover-frame {
+    grid-column: 1 / -1;
+    width: calc(100% - 42px);
+    margin: 7px 0 0 42px;
+  }
+
+  .project-copy strong {
+    font-size: 16px;
+  }
+
+  .project-copy > span {
+    font-size: 11px;
+    -webkit-line-clamp: initial;
+  }
+
+  .notebook-tabs {
+    position: sticky;
+    z-index: 10;
+    top: 8px;
+    right: auto;
+    display: flex;
+    width: max-content;
+    margin: -8px auto 0;
+    gap: 7px;
+  }
+
+  .notebook-tab {
+    width: 68px;
+    height: 38px;
+    padding: 0;
+    transform: none;
+    border-radius: 0 0 9px 9px;
+    font-size: 16px;
+  }
+
+  .notebook-tab:hover,
+  .notebook-tab:focus-visible,
+  .notebook-tab.is-active {
+    transform: translateY(3px);
+  }
+
+  .notebook-back {
+    top: 17px;
+    right: 16px;
+  }
+
+  .notebook-hint {
+    display: none;
+  }
+
+  .notebook-build-stamp {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+  }
+
+  .project-preview-dialog form {
+    display: block;
+    padding: 24px;
+  }
+
+  .project-preview-dialog img {
+    margin-bottom: 25px;
+  }
+
+  .project-dialog-number {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notebook-project,
+  .project-cover-frame,
+  .notebook-tab,
+  .notebook-back {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

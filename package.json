@@ -1,0 +1,13 @@
+{
+  "name": "portfolio-v3-craft-table",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/preview.mjs",
+    "verify": "node qa/verify-v3.mjs"
+  }
+}
+

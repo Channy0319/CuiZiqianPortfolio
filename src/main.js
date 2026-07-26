@@ -1,0 +1,102 @@
+import { CraftTableHomeV3 } from "./CraftTableHomeV3.js";
+import { ProjectSceneV3 } from "./ProjectSceneV3.js";
+import { ResumeSceneV3 } from "./ResumeSceneV3.js";
+import { WorkInProgressV3 } from "./WorkInProgressV3.js";
+import { OperationSceneV3 } from "./OperationSceneV3.js";
+
+const app = document.querySelector("#app");
+
+if (!app) {
+  throw new Error("Craft Table V3 app root not found");
+}
+
+let cleanupCurrentPage;
+let projectSceneController;
+let routeTransitionTimer;
+let routeEntryTimer;
+let routeTransitionToken = 0;
+
+const ROUTE_FOCUS_OUT_MS = 190;
+const ROUTE_FOCUS_IN_MS = 270;
+
+function leaveCurrentPage() {
+  cleanupCurrentPage?.();
+  cleanupCurrentPage = undefined;
+  projectSceneController = undefined;
+}
+
+function commitRoute() {
+  const route = location.hash.slice(1).toLowerCase();
+  const isResumeRoute = route === "resume";
+  const isWorkInProgressRoute = route === "about";
+  const isOperationRoute = route === "operation";
+  const isProjectRoute = ["project", "visual", "video"].some(
+    (chapter) => route === chapter || route.startsWith(`${chapter}/`),
+  );
+
+  if (isProjectRoute && projectSceneController) {
+    projectSceneController.update(route);
+    return;
+  }
+
+  leaveCurrentPage();
+
+  if (isProjectRoute) {
+    projectSceneController = ProjectSceneV3(app, route);
+    cleanupCurrentPage = () => {
+      projectSceneController?.destroy();
+      projectSceneController = undefined;
+    };
+    return;
+  }
+
+  if (isResumeRoute) {
+    cleanupCurrentPage = ResumeSceneV3(app);
+    return;
+  }
+
+  if (isWorkInProgressRoute) {
+    cleanupCurrentPage = WorkInProgressV3(app);
+    return;
+  }
+
+  if (isOperationRoute) {
+    cleanupCurrentPage = OperationSceneV3(app);
+    return;
+  }
+
+  cleanupCurrentPage = CraftTableHomeV3(app);
+}
+
+function playRouteEntry() {
+  window.clearTimeout(routeEntryTimer);
+  app.classList.remove("is-route-entering");
+  document.body.classList.remove("is-route-transitioning");
+  document.body.classList.add("is-route-refocusing");
+  void app.offsetWidth;
+  app.classList.add("is-route-entering");
+  routeEntryTimer = window.setTimeout(() => {
+    app.classList.remove("is-route-entering");
+    document.body.classList.remove("is-route-refocusing");
+  }, ROUTE_FOCUS_IN_MS + 30);
+}
+
+function transitionRoute() {
+  const token = ++routeTransitionToken;
+  window.clearTimeout(routeTransitionTimer);
+  window.clearTimeout(routeEntryTimer);
+  app.classList.remove("is-route-entering");
+  document.body.classList.remove("is-route-refocusing");
+  document.body.classList.add("is-route-transitioning");
+  app.classList.add("is-route-leaving");
+
+  routeTransitionTimer = window.setTimeout(() => {
+    if (token !== routeTransitionToken) return;
+    commitRoute();
+    app.classList.remove("is-route-leaving");
+    playRouteEntry();
+  }, ROUTE_FOCUS_OUT_MS);
+}
+
+window.addEventListener("hashchange", transitionRoute);
+commitRoute();
