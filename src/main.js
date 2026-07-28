@@ -5,8 +5,10 @@ import { WorkInProgressV3 } from "./WorkInProgressV3.js";
 import { OperationSceneV3 } from "./OperationSceneV3.js";
 import {
   decorationGroupId,
+  getDecorationAssetReport,
   mountDecorationGroup,
   prepareDecorationGroup,
+  prepareSiteShellDecorations,
   waitForDecorationGroup,
 } from "./decoration-groups.js";
 
@@ -24,47 +26,83 @@ let routeTransitionToken = 0;
 
 const ROUTE_FOCUS_OUT_MS = 190;
 const ROUTE_FOCUS_IN_MS = 270;
-const INITIAL_REVEAL_TIMEOUT_MS = 1700;
-const HOME_REVEAL_TIMEOUT_MS = 3500;
-const HOME_MIN_LOADING_MS = 650;
+const SITE_SHELL_REVEAL_DEADLINE_MS = 5000;
+const SITE_SHELL_MIN_LOADING_MS = 2000;
 
 function decodeImage(src, priority = "auto") {
-  const image = new Image();
-  image.decoding = "async";
-  image.fetchPriority = priority;
-  image.src = src;
-  return image.decode().catch(() => undefined);
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.decoding = "async";
+    image.fetchPriority = priority;
+    image.onload = async () => {
+      try {
+        await image.decode();
+      } catch {
+        // The loaded image remains usable if decode() is unsupported or interrupted.
+      }
+      resolve(src);
+    };
+    image.onerror = () => reject(new Error(`Initial image failed to load: ${src}`));
+    image.src = src;
+  });
 }
 
 async function revealInitialPage() {
-  const loadingStartedAt = performance.now();
-  const route = location.hash.slice(1).toLowerCase();
-  const sources = ["/assets/wood-desk-background.jpg"];
-  if (!route) {
-    sources.push("/assets/craft-table-object-sprites-polished.png", "/assets/notebook-only-v3.png");
-  } else {
-    const firstVisibleImage = app.querySelector('img[loading="eager"], img:not([loading])');
-    if (firstVisibleImage?.currentSrc || firstVisibleImage?.src) {
-      sources.push(firstVisibleImage.currentSrc || firstVisibleImage.src);
-    }
-  }
-
-  const criticalImagesReady = Promise.all(sources.map((src) => decodeImage(src, "high")));
-  const pageReady = route
-    ? criticalImagesReady
-    : Promise.all([criticalImagesReady, waitForDecorationGroup("home")]);
-  const timeoutMs = route ? INITIAL_REVEAL_TIMEOUT_MS : HOME_REVEAL_TIMEOUT_MS;
-
-  await Promise.race([
-    pageReady,
-    new Promise((resolve) => window.setTimeout(resolve, timeoutMs)),
+  const homeSources = [
+    "/assets/wood-desk-background.jpg",
+    "/assets/craft-table-object-sprites-polished.png",
+    "/assets/notebook-only-v3.png",
+  ];
+  const homeAssetStates = new Map(homeSources.map((src) => [src, "pending"]));
+  const homeAssetsReady = Promise.allSettled(
+    homeSources.map((src) =>
+      decodeImage(src, "high").then(
+        (value) => {
+          homeAssetStates.set(src, "fulfilled");
+          return value;
+        },
+        (error) => {
+          homeAssetStates.set(src, "rejected");
+          throw error;
+        },
+      ),
+    ),
+  );
+  const siteShellReady = Promise.allSettled([
+    homeAssetsReady,
+    waitForDecorationGroup("home"),
+    prepareSiteShellDecorations(),
   ]);
-  if (!route) {
-    const remainingMinimum = HOME_MIN_LOADING_MS - (performance.now() - loadingStartedAt);
-    if (remainingMinimum > 0) {
-      await new Promise((resolve) => window.setTimeout(resolve, remainingMinimum));
-    }
+  const minimumReady = new Promise((resolve) =>
+    window.setTimeout(resolve, Math.max(0, SITE_SHELL_MIN_LOADING_MS - performance.now())),
+  );
+  const completed = Promise.all([minimumReady, siteShellReady]).then(() => "ready");
+  const result = await Promise.race([
+    completed,
+    new Promise((resolve) =>
+      window.setTimeout(
+        () => resolve("timeout"),
+        Math.max(0, SITE_SHELL_REVEAL_DEADLINE_MS - performance.now()),
+      ),
+    ),
+  ]);
+
+  const decorationReport = getDecorationAssetReport();
+  const failedHomeAssets = [...homeAssetStates]
+    .filter(([, status]) => status === "rejected")
+    .map(([src]) => src);
+  if (result === "timeout" || decorationReport.pending.length || failedHomeAssets.length) {
+    console.warn("[initial-preload] Continuing with unresolved assets.", {
+      elapsedMs: Math.round(performance.now()),
+      pendingDecorations: decorationReport.pending,
+      failedDecorations: decorationReport.failed,
+      pendingHomeAssets: [...homeAssetStates]
+        .filter(([, status]) => status === "pending")
+        .map(([src]) => src),
+      failedHomeAssets,
+    });
   }
+  window.siteShellAssetsReady = result === "ready";
   window.clearTimeout(window.__initialRevealFallback);
   window.__initialRevealAt ||= performance.now();
   document.documentElement.classList.remove("is-initial-loading");

@@ -7,4 +7,8 @@ if (!existsSync(dist)) {
   throw new Error("Missing dist directory. Run `pnpm build` first.");
 }
 
-startStaticServer({ root: dist, port: Number(process.argv[2] || process.env.PORT || 4173) });
+startStaticServer({
+  root: dist,
+  port: Number(process.argv[2] || process.env.PORT || 4173),
+  cacheAssets: true,
+});

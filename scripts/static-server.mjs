@@ -15,7 +15,7 @@ const MIME_TYPES = {
   ".webp": "image/webp",
 };
 
-export function startStaticServer({ root, port }) {
+export function startStaticServer({ root, port, cacheAssets = false }) {
   const absoluteRoot = resolve(root);
   const server = createServer((request, response) => {
     const pathname = decodeURIComponent(new URL(request.url, `http://${request.headers.host}`).pathname);
@@ -36,9 +36,14 @@ export function startStaticServer({ root, port }) {
       filePath = existsSync(publicFile) ? publicFile : join(absoluteRoot, "index.html");
     }
 
+    const extension = extname(filePath);
+    const isCacheableAsset =
+      cacheAssets && [".jpg", ".jpeg", ".mp4", ".png", ".svg", ".webp"].includes(extension);
     response.writeHead(200, {
-      "Cache-Control": "no-store",
-      "Content-Type": MIME_TYPES[extname(filePath)] || "application/octet-stream",
+      "Cache-Control": isCacheableAsset
+        ? "public, max-age=3600"
+        : "no-store",
+      "Content-Type": MIME_TYPES[extension] || "application/octet-stream",
     });
     createReadStream(filePath).pipe(response);
   });

@@ -6,9 +6,10 @@
     <meta name="theme-color" content="#8a5737" />
     <script>
       document.documentElement.classList.add("is-initial-loading");
-      const initialFallbackMs = !location.hash || location.hash === "#" ? 3500 : 1700;
+      const initialFallbackMs = 5100;
       window.__initialRevealFallback = window.setTimeout(() => {
         window.__initialRevealAt = performance.now();
+        window.siteShellAssetsReady ??= false;
         document.documentElement.classList.remove("is-initial-loading");
         document.documentElement.classList.add("is-initial-ready");
       }, initialFallbackMs);
