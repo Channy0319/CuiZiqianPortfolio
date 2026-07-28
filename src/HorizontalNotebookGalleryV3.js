@@ -53,10 +53,12 @@ export function mountHorizontalNotebookGallery(root, onActiveChange = () => {}) 
 
   const moveTo = (index) => {
     const nextIndex = Math.max(0, Math.min(items.length - 1, index));
-    items[nextIndex]?.scrollIntoView({
+    const item = items[nextIndex];
+    if (!item) return;
+    viewport.scrollTo({
+      left: item.offsetLeft,
+      top: 0,
       behavior: reducedMotion ? "auto" : "smooth",
-      block: "nearest",
-      inline: "start",
     });
   };
 
