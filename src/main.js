@@ -3,6 +3,11 @@ import { ProjectSceneV3 } from "./ProjectSceneV3.js";
 import { ResumeSceneV3 } from "./ResumeSceneV3.js";
 import { WorkInProgressV3 } from "./WorkInProgressV3.js";
 import { OperationSceneV3 } from "./OperationSceneV3.js";
+import {
+  decorationGroupId,
+  mountDecorationGroup,
+  prepareDecorationGroup,
+} from "./decoration-groups.js";
 
 const app = document.querySelector("#app");
 
@@ -49,11 +54,6 @@ async function revealInitialPage() {
   document.documentElement.classList.remove("is-initial-loading");
   document.documentElement.classList.add("is-initial-ready");
 
-  if (!route) {
-    const enableDecor = () => app.querySelector(".craft-table-v3")?.classList.add("is-decor-ready");
-    if ("requestIdleCallback" in window) window.requestIdleCallback(enableDecor, { timeout: 1200 });
-    else window.setTimeout(enableDecor, 400);
-  }
 }
 
 function leaveCurrentPage() {
@@ -64,6 +64,7 @@ function leaveCurrentPage() {
 
 function commitRoute() {
   const route = location.hash.slice(1).toLowerCase();
+  const decorationId = decorationGroupId(route);
   const isResumeRoute = route === "resume";
   const isWorkInProgressRoute = route === "about";
   const isOperationRoute = route === "operation";
@@ -73,6 +74,7 @@ function commitRoute() {
 
   if (isProjectRoute && projectSceneController) {
     projectSceneController.update(route);
+    mountDecorationGroup(app, decorationId);
     return;
   }
 
@@ -84,25 +86,30 @@ function commitRoute() {
       projectSceneController?.destroy();
       projectSceneController = undefined;
     };
+    mountDecorationGroup(app, decorationId);
     return;
   }
 
   if (isResumeRoute) {
     cleanupCurrentPage = ResumeSceneV3(app);
+    mountDecorationGroup(app, decorationId);
     return;
   }
 
   if (isWorkInProgressRoute) {
     cleanupCurrentPage = WorkInProgressV3(app);
+    mountDecorationGroup(app, decorationId);
     return;
   }
 
   if (isOperationRoute) {
     cleanupCurrentPage = OperationSceneV3(app);
+    mountDecorationGroup(app, decorationId);
     return;
   }
 
   cleanupCurrentPage = CraftTableHomeV3(app);
+  mountDecorationGroup(app, decorationId);
 }
 
 function playRouteEntry() {
@@ -120,6 +127,7 @@ function playRouteEntry() {
 
 function transitionRoute() {
   const token = ++routeTransitionToken;
+  prepareDecorationGroup(decorationGroupId(location.hash.slice(1).toLowerCase()));
   window.clearTimeout(routeTransitionTimer);
   window.clearTimeout(routeEntryTimer);
   app.classList.remove("is-route-entering");
@@ -136,5 +144,6 @@ function transitionRoute() {
 }
 
 window.addEventListener("hashchange", transitionRoute);
+prepareDecorationGroup(decorationGroupId(location.hash.slice(1).toLowerCase()));
 commitRoute();
 revealInitialPage();

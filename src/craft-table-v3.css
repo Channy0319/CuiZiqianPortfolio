@@ -24,6 +24,23 @@ body {
   background: transparent;
 }
 
+.decoration-group {
+  opacity: 0;
+  filter: blur(2px);
+  transition:
+    opacity 320ms ease,
+    filter 320ms ease;
+}
+
+.decoration-group.is-decoration-ready {
+  opacity: 1;
+  filter: blur(0);
+}
+
+.decoration-group.is-decoration-cached {
+  transition: none;
+}
+
 html.is-initial-loading #app {
   opacity: 0.01;
   filter: blur(8px);
@@ -162,6 +179,12 @@ body.is-route-refocusing::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .decoration-group,
+  .decoration-group.is-decoration-ready {
+    filter: none;
+    transition: none;
+  }
+
   body::after,
   body.is-route-refocusing::after {
     display: none;
@@ -415,15 +438,11 @@ button {
   display: block;
   width: 86px;
   aspect-ratio: 1;
-  background-image: none;
+  background-image: url("/assets/home-mini-sprites.webp");
   background-repeat: no-repeat;
   background-position: var(--mini-x) var(--mini-y);
   background-size: 406% 406%;
   filter: drop-shadow(0 7px 6px rgba(42, 18, 7, 0.28));
-}
-
-.craft-table-v3.is-decor-ready .mini-prop {
-  background-image: url("/assets/home-mini-sprites.webp");
 }
 
 .mini-crochet-flower {

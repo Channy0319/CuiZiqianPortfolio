@@ -620,7 +620,7 @@
   height: 100%;
   background:
     linear-gradient(rgba(92, 66, 40, 0.12), rgba(92, 66, 40, 0.12)),
-    url("/assets/project-notebook/vintage-plant-photo.png") center / cover;
+    url("/assets/project-notebook/vintage-plant-photo.webp") center / cover;
   filter: saturate(0.78) sepia(0.16) contrast(0.92);
 }
 

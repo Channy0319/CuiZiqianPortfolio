@@ -19,29 +19,29 @@ function decorMarkup() {
       <span class="scene-mini scene-flower"></span>
       <img
         class="scene-asset scene-leaves"
-        src="/assets/project-notebook/sprites-v3/two-leaves-v3.png"
+        src="/assets/project-notebook/sprites-v3/two-leaves-v3.webp"
         alt=""
-        loading="lazy" decoding="async" width="1536" height="1024"
+        loading="eager" decoding="async" fetchpriority="low" width="1254" height="1254"
       />
       <span class="scene-polaroid"><i></i></span>
       <span class="scene-mini-crop scene-button"></span>
       <img
         class="scene-asset scene-binder"
-        src="/assets/project-notebook/sprites-v3/binder-clips-v3.png"
+        src="/assets/project-notebook/sprites-v3/binder-clips-v3.webp"
         alt=""
-        loading="lazy" decoding="async" width="1536" height="1024"
+        loading="eager" decoding="async" fetchpriority="low" width="1254" height="1254"
       />
       <img
         class="scene-asset scene-pencil-set"
-        src="/assets/project-notebook/sprites-v3/pencil-v3.png"
+        src="/assets/project-notebook/sprites-v3/pencil-v3.webp"
         alt=""
-        loading="lazy" decoding="async" width="1536" height="1024"
+        loading="eager" decoding="async" fetchpriority="low" width="1254" height="1254"
       />
       <img
         class="scene-asset scene-yarn"
-        src="/assets/project-notebook/sprites-v3/yarn-v3.png"
+        src="/assets/project-notebook/sprites-v3/yarn-v3.webp"
         alt=""
-        loading="lazy" decoding="async" width="1536" height="1024"
+        loading="eager" decoding="async" fetchpriority="low" width="1254" height="1254"
       />
       <span class="scene-mini-crop scene-paperclip"></span>
       <span class="scene-mini-crop scene-pushpin"></span>
