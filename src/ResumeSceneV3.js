@@ -86,6 +86,7 @@ export function ResumeSceneV3(container) {
           class="scene-asset scene-leaves"
           src="/assets/project-notebook/sprites-v3/two-leaves-v3.png"
           alt=""
+          loading="lazy" decoding="async" width="1536" height="1024"
         />
         <span class="scene-polaroid"><i></i></span>
         <span class="scene-mini-crop scene-button"></span>
@@ -93,16 +94,19 @@ export function ResumeSceneV3(container) {
           class="scene-asset scene-binder"
           src="/assets/project-notebook/sprites-v3/binder-clips-v3.png"
           alt=""
+          loading="lazy" decoding="async" width="1536" height="1024"
         />
         <img
           class="scene-asset scene-pencil-set"
           src="/assets/project-notebook/sprites-v3/pencil-v3.png"
           alt=""
+          loading="lazy" decoding="async" width="1536" height="1024"
         />
         <img
           class="scene-asset scene-yarn"
           src="/assets/project-notebook/sprites-v3/yarn-v3.png"
           alt=""
+          loading="lazy" decoding="async" width="1536" height="1024"
         />
         <span class="scene-mini-crop scene-paperclip"></span>
         <span class="scene-mini-crop scene-pushpin"></span>
@@ -118,6 +122,9 @@ export function ResumeSceneV3(container) {
               alt="崔子芊证件照"
               width="1016"
               height="1538"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
             />
             <div class="resume-identity">
               <h1>崔子芊 <em>Cui Ziqian</em></h1>

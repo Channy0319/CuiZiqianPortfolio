@@ -21,6 +21,7 @@ function decorMarkup() {
         class="scene-asset scene-leaves"
         src="/assets/project-notebook/sprites-v3/two-leaves-v3.png"
         alt=""
+        loading="lazy" decoding="async" width="1536" height="1024"
       />
       <span class="scene-polaroid"><i></i></span>
       <span class="scene-mini-crop scene-button"></span>
@@ -28,16 +29,19 @@ function decorMarkup() {
         class="scene-asset scene-binder"
         src="/assets/project-notebook/sprites-v3/binder-clips-v3.png"
         alt=""
+        loading="lazy" decoding="async" width="1536" height="1024"
       />
       <img
         class="scene-asset scene-pencil-set"
         src="/assets/project-notebook/sprites-v3/pencil-v3.png"
         alt=""
+        loading="lazy" decoding="async" width="1536" height="1024"
       />
       <img
         class="scene-asset scene-yarn"
         src="/assets/project-notebook/sprites-v3/yarn-v3.png"
         alt=""
+        loading="lazy" decoding="async" width="1536" height="1024"
       />
       <span class="scene-mini-crop scene-paperclip"></span>
       <span class="scene-mini-crop scene-pushpin"></span>
@@ -60,7 +64,7 @@ function listProjectMarkup(project) {
         <small>${project.date}<i></i>${project.team}</small>
       </span>
       <span class="scene-project-cover">
-        <img src="${project.image}" alt="${project.alt}" width="1200" height="675" />
+        <img src="${project.image}" alt="${project.alt}" width="1200" height="675" loading="lazy" decoding="async" />
         <em>Open project ↗</em>
       </span>
     </button>
@@ -320,8 +324,9 @@ function visualThemeCardMarkup(theme) {
           alt="${theme.title} 专题总预览"
           width="960"
           height="540"
-          loading="${theme.number <= "03" ? "eager" : "lazy"}"
+          loading="${theme.number === "01" ? "eager" : "lazy"}"
           decoding="async"
+          ${theme.number === "01" ? 'fetchpriority="high"' : ""}
         />
       </span>
     </button>
@@ -422,8 +427,9 @@ function videoCardMarkup(video) {
           alt="${video.title} 视频封面"
           width="${video.width}"
           height="${video.height}"
-          loading="${video.number <= "03" ? "eager" : "lazy"}"
+          loading="${video.number === "01" ? "eager" : "lazy"}"
           decoding="async"
+          ${video.number === "01" ? 'fetchpriority="high"' : ""}
         />
         <i aria-hidden="true">▶</i>
       </span>
@@ -578,7 +584,7 @@ export function ProjectSceneV3(container, initialRoute = "project") {
             <button type="button" data-close-video-overlay aria-label="关闭视频播放器">×</button>
           </header>
           <button class="scene-video-overlay-nav is-previous" type="button" data-video-overlay-previous aria-label="上一条视频">‹</button>
-          <video controls preload="metadata" data-video-overlay-player></video>
+          <video controls preload="none" data-video-overlay-player></video>
           <button class="scene-video-overlay-nav is-next" type="button" data-video-overlay-next aria-label="下一条视频">›</button>
         </div>
       </div>

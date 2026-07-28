@@ -18,6 +18,43 @@ let routeTransitionToken = 0;
 
 const ROUTE_FOCUS_OUT_MS = 190;
 const ROUTE_FOCUS_IN_MS = 270;
+const INITIAL_REVEAL_TIMEOUT_MS = 1700;
+
+function decodeImage(src, priority = "auto") {
+  const image = new Image();
+  image.decoding = "async";
+  image.fetchPriority = priority;
+  image.src = src;
+  return image.decode().catch(() => undefined);
+}
+
+async function revealInitialPage() {
+  const route = location.hash.slice(1).toLowerCase();
+  const sources = ["/assets/wood-desk-background.jpg"];
+  if (!route) {
+    sources.push("/assets/craft-table-object-sprites-polished.png", "/assets/notebook-only-v3.png");
+  } else {
+    const firstVisibleImage = app.querySelector('img[loading="eager"], img:not([loading])');
+    if (firstVisibleImage?.currentSrc || firstVisibleImage?.src) {
+      sources.push(firstVisibleImage.currentSrc || firstVisibleImage.src);
+    }
+  }
+
+  await Promise.race([
+    Promise.all(sources.map((src) => decodeImage(src, "high"))),
+    new Promise((resolve) => window.setTimeout(resolve, INITIAL_REVEAL_TIMEOUT_MS)),
+  ]);
+  window.clearTimeout(window.__initialRevealFallback);
+  window.__initialRevealAt ||= performance.now();
+  document.documentElement.classList.remove("is-initial-loading");
+  document.documentElement.classList.add("is-initial-ready");
+
+  if (!route) {
+    const enableDecor = () => app.querySelector(".craft-table-v3")?.classList.add("is-decor-ready");
+    if ("requestIdleCallback" in window) window.requestIdleCallback(enableDecor, { timeout: 1200 });
+    else window.setTimeout(enableDecor, 400);
+  }
+}
 
 function leaveCurrentPage() {
   cleanupCurrentPage?.();
@@ -100,3 +137,4 @@ function transitionRoute() {
 
 window.addEventListener("hashchange", transitionRoute);
 commitRoute();
+revealInitialPage();

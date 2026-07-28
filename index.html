@@ -4,14 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#8a5737" />
+    <script>
+      document.documentElement.classList.add("is-initial-loading");
+      window.__initialRevealFallback = window.setTimeout(() => {
+        window.__initialRevealAt = performance.now();
+        document.documentElement.classList.remove("is-initial-loading");
+        document.documentElement.classList.add("is-initial-ready");
+      }, 1700);
+    </script>
     <meta
       name="description"
       content="Cui Ziqian — brand marketing, global communication and content strategy."
     />
     <title>Cui Ziqian — Craft Table</title>
     <link rel="preload" href="/assets/wood-desk-background.jpg" as="image" />
-    <link rel="preload" href="/assets/craft-table-object-sprites-polished.png" as="image" />
-    <link rel="preload" href="/assets/craft-table-mini-sprites.png" as="image" />
+    <script>
+      if (!location.hash || location.hash === "#") {
+        for (const href of [
+          "/assets/craft-table-object-sprites-polished.png",
+          "/assets/notebook-only-v3.png",
+        ]) {
+          const preload = document.createElement("link");
+          preload.rel = "preload";
+          preload.as = "image";
+          preload.href = href;
+          document.head.append(preload);
+        }
+      }
+    </script>
     <link rel="stylesheet" href="/src/craft-table-v3.css" />
     <link rel="stylesheet" href="/src/project-scene-v3.css" />
     <link rel="stylesheet" href="/src/resume-scene-v3.css" />

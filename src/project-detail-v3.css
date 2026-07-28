@@ -553,7 +553,7 @@
   position: absolute;
   display: block;
   aspect-ratio: 1;
-  background-image: url("/assets/craft-table-mini-sprites.png");
+  background-image: url("/assets/scene-mini-sprites.webp");
   background-repeat: no-repeat;
   background-position: var(--detail-mini-x) var(--detail-mini-y);
   background-size: 406% 406%;

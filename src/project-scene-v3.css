@@ -1018,7 +1018,7 @@
 .scene-mini-crop {
   position: absolute;
   display: block;
-  background-image: url("/assets/craft-table-mini-sprites.png");
+  background-image: url("/assets/scene-mini-sprites.webp");
   background-repeat: no-repeat;
   filter:
     drop-shadow(8px 14px 11px rgba(38, 17, 7, 0.38))
