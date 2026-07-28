@@ -29,6 +29,16 @@ const ROUTE_FOCUS_IN_MS = 270;
 const SITE_SHELL_REVEAL_DEADLINE_MS = 5000;
 const SITE_SHELL_MIN_LOADING_MS = 2000;
 
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
+function resetDocumentScroll() {
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+}
+
 function decodeImage(src, priority = "auto") {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -191,7 +201,9 @@ function transitionRoute() {
 
   routeTransitionTimer = window.setTimeout(() => {
     if (token !== routeTransitionToken) return;
+    resetDocumentScroll();
     commitRoute();
+    requestAnimationFrame(resetDocumentScroll);
     app.classList.remove("is-route-leaving");
     playRouteEntry();
   }, ROUTE_FOCUS_OUT_MS);
@@ -199,5 +211,7 @@ function transitionRoute() {
 
 window.addEventListener("hashchange", transitionRoute);
 prepareDecorationGroup(decorationGroupId(location.hash.slice(1).toLowerCase()));
+resetDocumentScroll();
 commitRoute();
+requestAnimationFrame(resetDocumentScroll);
 revealInitialPage();

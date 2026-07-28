@@ -292,9 +292,9 @@ function galleryShellMarkup({ title, label, cards, kind }) {
           <h2>${title}</h2>
         </div>
         <div class="scene-gallery-controls">
-          <span class="scene-gallery-arrow" aria-hidden="true">←</span>
+          <button type="button" data-gallery-previous aria-label="查看上一项">←</button>
           <p><b data-gallery-current>01</b> / <span data-gallery-total>01</span></p>
-          <span class="scene-gallery-arrow" aria-hidden="true">→</span>
+          <button type="button" data-gallery-next aria-label="查看下一项">→</button>
         </div>
       </header>
       <div
