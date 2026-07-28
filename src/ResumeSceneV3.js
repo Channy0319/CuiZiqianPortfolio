@@ -118,10 +118,10 @@ export function ResumeSceneV3(container) {
           <header class="resume-profile">
             <img
               class="resume-portrait"
-              src="/assets/resume/cui-ziqian-portrait.png"
+              src="/assets/resume/cui-ziqian-portrait.webp"
               alt="崔子芊证件照"
-              width="1016"
-              height="1538"
+              width="508"
+              height="774"
               loading="eager"
               decoding="async"
               fetchpriority="high"

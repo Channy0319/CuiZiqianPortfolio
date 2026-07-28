@@ -159,7 +159,7 @@ export function WorkInProgressV3(container) {
           `${journalIcon("thread")}Last Note`,
           "最后一页",
           "wip-last-note",
-          `<p>一直很喜欢需要一点耐心的东西。</p><p>比如钩织。<br />比如乐高。<br />比如做作品集。</p><p>它们看起来，<br />都是很多零散的小部分，<br />但慢慢拼起来，</p><p><b>都会变成一个我会喜欢的样子。</b></p><span class="wip-heart">♡</span>`,
+          `<p>很喜欢需要耐心的东西。</p><p>比如钩织。<br />比如乐高。<br />比如做作品集。</p><p>它们看起来，<br />都是很多零散的小部分，<br />但慢慢拼起来，</p><p><b>都会变成一个我会喜欢的样子。</b></p><span class="wip-heart">♡</span>`,
         )}
       </div>
 
