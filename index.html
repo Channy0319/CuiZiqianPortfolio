@@ -8,10 +8,9 @@
       document.documentElement.classList.add("is-initial-loading");
       const initialFallbackMs = 5100;
       window.__initialRevealFallback = window.setTimeout(() => {
-        window.__initialRevealAt = performance.now();
+        window.__initialFallbackExpired = true;
         window.siteShellAssetsReady ??= false;
-        document.documentElement.classList.remove("is-initial-loading");
-        document.documentElement.classList.add("is-initial-ready");
+        document.documentElement.classList.add("is-initial-fallback-expired");
       }, initialFallbackMs);
     </script>
     <meta
@@ -21,7 +20,7 @@
     <title>Cui Ziqian — Craft Table</title>
     <link rel="preload" href="/assets/wood-desk-background.jpg" as="image" />
     <script>
-      if (!location.hash || location.hash === "#") {
+      if (!location.hash || location.hash === "#" || location.hash === "#home") {
         for (const href of [
           "/assets/craft-table-object-sprites-polished.png",
           "/assets/notebook-only-v3.png",

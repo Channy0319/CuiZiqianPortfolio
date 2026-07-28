@@ -1,5 +1,3 @@
-const DECORATION_TIMEOUT_MS = 1100;
-
 const sharedSceneDecorationAssets = [
   "/assets/scene-mini-sprites.webp",
   "/assets/project-notebook/vintage-plant-photo.webp",
@@ -47,7 +45,7 @@ function loadDecorationAsset(src) {
   const promise = new Promise((resolve, reject) => {
     const image = new Image();
     image.decoding = "async";
-    image.fetchPriority = "low";
+    image.fetchPriority = "auto";
     image.onload = async () => {
       try {
         await image.decode();
@@ -84,10 +82,7 @@ export function prepareDecorationGroup(groupId) {
     state.ready = true;
     state.settled = true;
   });
-  state.readyPromise = Promise.race([
-    settledPromise,
-    new Promise((resolve) => window.setTimeout(resolve, DECORATION_TIMEOUT_MS)),
-  ]).then(() => {
+  state.readyPromise = settledPromise.then(() => {
     state.ready = true;
     return state;
   });

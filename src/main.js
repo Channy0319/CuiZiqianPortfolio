@@ -92,7 +92,7 @@ async function revealInitialPage() {
     new Promise((resolve) =>
       window.setTimeout(
         () => resolve("timeout"),
-        Math.max(0, SITE_SHELL_REVEAL_DEADLINE_MS - performance.now()),
+        SITE_SHELL_REVEAL_DEADLINE_MS,
       ),
     ),
   ]);
@@ -115,9 +115,9 @@ async function revealInitialPage() {
   window.siteShellAssetsReady = result === "ready";
   window.clearTimeout(window.__initialRevealFallback);
   window.__initialRevealAt ||= performance.now();
+  document.documentElement.classList.remove("is-initial-fallback-expired");
   document.documentElement.classList.remove("is-initial-loading");
   document.documentElement.classList.add("is-initial-ready");
-
 }
 
 function leaveCurrentPage() {
