@@ -69,6 +69,11 @@ export function prepareDecorationGroup(groupId) {
   return state.readyPromise;
 }
 
+export function waitForDecorationGroup(groupId) {
+  prepareDecorationGroup(groupId);
+  return groupStates.get(groupId).settledPromise;
+}
+
 export function mountDecorationGroup(container, groupId) {
   const selector = groupId === "home" ? ".desk-ephemera" : ".scene-still-life";
   const layer = container.querySelector(selector);
@@ -90,6 +95,9 @@ export function mountDecorationGroup(container, groupId) {
 
   prepareDecorationGroup(groupId).then(() => {
     if (layer.isConnected && layer.dataset.decorationGroup === groupId) {
+      if (groupId === "home" && document.documentElement.classList.contains("is-initial-loading")) {
+        layer.classList.add("is-decoration-cached");
+      }
       layer.classList.add("is-decoration-ready");
     }
   });

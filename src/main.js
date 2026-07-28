@@ -7,6 +7,7 @@ import {
   decorationGroupId,
   mountDecorationGroup,
   prepareDecorationGroup,
+  waitForDecorationGroup,
 } from "./decoration-groups.js";
 
 const app = document.querySelector("#app");
@@ -24,6 +25,8 @@ let routeTransitionToken = 0;
 const ROUTE_FOCUS_OUT_MS = 190;
 const ROUTE_FOCUS_IN_MS = 270;
 const INITIAL_REVEAL_TIMEOUT_MS = 1700;
+const HOME_REVEAL_TIMEOUT_MS = 3500;
+const HOME_MIN_LOADING_MS = 650;
 
 function decodeImage(src, priority = "auto") {
   const image = new Image();
@@ -34,6 +37,7 @@ function decodeImage(src, priority = "auto") {
 }
 
 async function revealInitialPage() {
+  const loadingStartedAt = performance.now();
   const route = location.hash.slice(1).toLowerCase();
   const sources = ["/assets/wood-desk-background.jpg"];
   if (!route) {
@@ -45,10 +49,22 @@ async function revealInitialPage() {
     }
   }
 
+  const criticalImagesReady = Promise.all(sources.map((src) => decodeImage(src, "high")));
+  const pageReady = route
+    ? criticalImagesReady
+    : Promise.all([criticalImagesReady, waitForDecorationGroup("home")]);
+  const timeoutMs = route ? INITIAL_REVEAL_TIMEOUT_MS : HOME_REVEAL_TIMEOUT_MS;
+
   await Promise.race([
-    Promise.all(sources.map((src) => decodeImage(src, "high"))),
-    new Promise((resolve) => window.setTimeout(resolve, INITIAL_REVEAL_TIMEOUT_MS)),
+    pageReady,
+    new Promise((resolve) => window.setTimeout(resolve, timeoutMs)),
   ]);
+  if (!route) {
+    const remainingMinimum = HOME_MIN_LOADING_MS - (performance.now() - loadingStartedAt);
+    if (remainingMinimum > 0) {
+      await new Promise((resolve) => window.setTimeout(resolve, remainingMinimum));
+    }
+  }
   window.clearTimeout(window.__initialRevealFallback);
   window.__initialRevealAt ||= performance.now();
   document.documentElement.classList.remove("is-initial-loading");
