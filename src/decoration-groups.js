@@ -41,26 +41,52 @@ export function decorationGroupId(route) {
 function loadDecorationAsset(src) {
   if (assetLoads.has(src)) return assetLoads.get(src);
 
-  assetStates.set(src, { src, status: "pending" });
+  assetStates.set(src, { src, status: "pending", phase: "request" });
   const promise = new Promise((resolve, reject) => {
     const image = new Image();
+    let handlingLoad = false;
+    let settled = false;
     image.decoding = "async";
     image.fetchPriority = "auto";
-    image.onload = async () => {
-      try {
-        await image.decode();
-      } catch {
-        // A successful load is still usable when decode() is unavailable or interrupted.
-      }
-      assetStates.set(src, { src, status: "fulfilled" });
-      resolve(src);
-    };
-    image.onerror = () => {
-      const error = new Error(`Decoration failed to load: ${src}`);
-      assetStates.set(src, { src, status: "rejected", error });
+
+    const fail = (phase, cause) => {
+      if (settled) return;
+      settled = true;
+      const error = new Error(`Decoration ${phase} failed: ${src}`, { cause });
+      assetStates.set(src, { src, status: "failed", phase, error });
       reject(error);
     };
+
+    const finishLoad = async () => {
+      if (settled || handlingLoad) return;
+      handlingLoad = true;
+      if (!image.complete || image.naturalWidth === 0) {
+        fail("load", new Error("Image completed without usable pixels"));
+        return;
+      }
+
+      assetStates.set(src, { src, status: "pending", phase: "decode" });
+      try {
+        await image.decode();
+      } catch (error) {
+        fail("decode", error);
+        return;
+      }
+
+      if (image.naturalWidth === 0) {
+        fail("decode", new Error("Decoded image has no usable pixels"));
+        return;
+      }
+
+      settled = true;
+      assetStates.set(src, { src, status: "loaded", phase: "complete" });
+      resolve(src);
+    };
+
+    image.onload = finishLoad;
+    image.onerror = (error) => fail("load", error);
     image.src = src;
+    if (image.complete) queueMicrotask(finishLoad);
   });
 
   assetLoads.set(src, promise);
@@ -98,7 +124,9 @@ export function prepareSiteShellDecorations() {
   siteShellReadyPromise = Promise.all(
     groupIds.map((groupId) => groupStates.get(groupId).settledPromise),
   ).then((results) => {
-    siteShellAssetsReady = true;
+    siteShellAssetsReady = [...assetStates.values()].every(
+      ({ status }) => status === "loaded",
+    );
     return results;
   });
   return siteShellReadyPromise;
@@ -107,13 +135,40 @@ export function prepareSiteShellDecorations() {
 export function getDecorationAssetReport() {
   return {
     ready: siteShellAssetsReady,
+    loaded: [...assetStates.values()]
+      .filter(({ status }) => status === "loaded")
+      .map(({ src }) => src),
     pending: [...assetStates.values()]
       .filter(({ status }) => status === "pending")
       .map(({ src }) => src),
     failed: [...assetStates.values()]
-      .filter(({ status }) => status === "rejected")
-      .map(({ src }) => src),
+      .filter(({ status }) => status === "failed")
+      .map(({ src, phase, error }) => ({
+        src,
+        phase,
+        message: error?.message || "Unknown decoration error",
+      })),
     uniqueUrls: [...new Set(Object.values(GROUPS).flat())],
+  };
+}
+
+export function getDecorationGroupReport(groupId) {
+  const sources = GROUPS[groupId] || [];
+  const states = sources.map((src) => assetStates.get(src) || {
+    src,
+    status: "pending",
+    phase: "not-started",
+  });
+  return {
+    loaded: states.filter(({ status }) => status === "loaded").map(({ src }) => src),
+    pending: states.filter(({ status }) => status === "pending").map(({ src }) => src),
+    failed: states
+      .filter(({ status }) => status === "failed")
+      .map(({ src, phase, error }) => ({
+        src,
+        phase,
+        message: error?.message || "Unknown decoration error",
+      })),
   };
 }
 

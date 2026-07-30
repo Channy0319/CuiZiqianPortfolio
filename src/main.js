@@ -6,6 +6,7 @@ import { OperationSceneV3 } from "./OperationSceneV3.js";
 import {
   decorationGroupId,
   getDecorationAssetReport,
+  getDecorationGroupReport,
   mountDecorationGroup,
   prepareDecorationGroup,
   prepareSiteShellDecorations,
@@ -26,7 +27,7 @@ let routeTransitionToken = 0;
 
 const ROUTE_FOCUS_OUT_MS = 190;
 const ROUTE_FOCUS_IN_MS = 270;
-const SITE_SHELL_REVEAL_DEADLINE_MS = 5000;
+const SITE_SHELL_REVEAL_DEADLINE_MS = 8000;
 const SITE_SHELL_MIN_LOADING_MS = 2000;
 
 if ("scrollRestoration" in history) {
@@ -39,80 +40,208 @@ function resetDocumentScroll() {
   window.scrollTo({ top: 0, left: 0, behavior: "instant" });
 }
 
-function decodeImage(src, priority = "auto") {
+function decodeImage(src, priority, states) {
+  states.set(src, { src, status: "pending", phase: "request" });
   return new Promise((resolve, reject) => {
     const image = new Image();
+    let handlingLoad = false;
+    let settled = false;
     image.decoding = "async";
     image.fetchPriority = priority;
-    image.onload = async () => {
+
+    const fail = (phase, cause) => {
+      if (settled) return;
+      settled = true;
+      const error = new Error(`Initial image ${phase} failed: ${src}`, { cause });
+      states.set(src, { src, status: "failed", phase, error });
+      reject(error);
+    };
+
+    const finishLoad = async () => {
+      if (settled || handlingLoad) return;
+      handlingLoad = true;
+      if (!image.complete || image.naturalWidth === 0) {
+        fail("load", new Error("Image completed without usable pixels"));
+        return;
+      }
+
+      states.set(src, { src, status: "pending", phase: "decode" });
       try {
         await image.decode();
-      } catch {
-        // The loaded image remains usable if decode() is unsupported or interrupted.
+      } catch (error) {
+        fail("decode", error);
+        return;
       }
+
+      if (image.naturalWidth === 0) {
+        fail("decode", new Error("Decoded image has no usable pixels"));
+        return;
+      }
+
+      settled = true;
+      states.set(src, { src, status: "loaded", phase: "complete" });
       resolve(src);
     };
-    image.onerror = () => reject(new Error(`Initial image failed to load: ${src}`));
+
+    image.onload = finishLoad;
+    image.onerror = (error) => fail("load", error);
     image.src = src;
+    if (image.complete) queueMicrotask(finishLoad);
   });
 }
 
+function nextAnimationFrame() {
+  return new Promise((resolve) => requestAnimationFrame(resolve));
+}
+
+async function waitForStableHomePaint() {
+  const paintReady = async () => {
+    if (document.fonts?.ready) {
+      try {
+        await document.fonts.ready;
+      } catch (error) {
+        console.warn("[initial-preload] Font readiness check failed.", error);
+      }
+    }
+
+    const home = document.querySelector(".craft-table-v3");
+    let previousSize;
+    let stableFrames = 0;
+    for (let frame = 0; frame < 5 && stableFrames < 2; frame += 1) {
+      await nextAnimationFrame();
+      const rect = home?.getBoundingClientRect();
+      const currentSize = rect ? `${Math.round(rect.width)}x${Math.round(rect.height)}` : "missing";
+      stableFrames = currentSize === previousSize ? stableFrames + 1 : 0;
+      previousSize = currentSize;
+    }
+  };
+
+  await Promise.race([
+    paintReady(),
+    new Promise((resolve) => window.setTimeout(resolve, 240)),
+  ]);
+}
+
 async function revealInitialPage() {
+  const initialLoadingStartedAt = Number.isFinite(window.__initialLoadingStartedAt)
+    ? window.__initialLoadingStartedAt
+    : 0;
+  const initialLoadingElapsed = () => performance.now() - initialLoadingStartedAt;
   const homeSources = [
     "/assets/wood-desk-background.jpg",
     "/assets/craft-table-object-sprites-polished.png",
     "/assets/notebook-only-v3.png",
   ];
-  const homeAssetStates = new Map(homeSources.map((src) => [src, "pending"]));
-  const homeAssetsReady = Promise.allSettled(
-    homeSources.map((src) =>
-      decodeImage(src, "high").then(
-        (value) => {
-          homeAssetStates.set(src, "fulfilled");
-          return value;
-        },
-        (error) => {
-          homeAssetStates.set(src, "rejected");
-          throw error;
-        },
-      ),
-    ),
+  const homeAssetStates = new Map();
+  const homeAssetsSettled = Promise.allSettled(
+    homeSources.map((src) => decodeImage(src, "high", homeAssetStates)),
   );
-  const siteShellReady = Promise.allSettled([
-    homeAssetsReady,
+  const siteShellSettled = Promise.all([
+    homeAssetsSettled,
     waitForDecorationGroup("home"),
     prepareSiteShellDecorations(),
   ]);
   const minimumReady = new Promise((resolve) =>
-    window.setTimeout(resolve, Math.max(0, SITE_SHELL_MIN_LOADING_MS - performance.now())),
+    window.setTimeout(resolve, Math.max(0, SITE_SHELL_MIN_LOADING_MS - initialLoadingElapsed())),
   );
-  const completed = Promise.all([minimumReady, siteShellReady]).then(() => "ready");
+  const completed = Promise.all([minimumReady, siteShellSettled]).then(() => "settled");
   const result = await Promise.race([
     completed,
     new Promise((resolve) =>
       window.setTimeout(
         () => resolve("timeout"),
-        SITE_SHELL_REVEAL_DEADLINE_MS,
+        Math.max(0, SITE_SHELL_REVEAL_DEADLINE_MS - initialLoadingElapsed()),
       ),
     ),
   ]);
 
+  const getHomeReport = () => ({
+    loaded: [...homeAssetStates.values()]
+      .filter(({ status }) => status === "loaded")
+      .map(({ src }) => src),
+    pending: [...homeAssetStates.values()]
+      .filter(({ status }) => status === "pending")
+      .map(({ src }) => src),
+    failed: [...homeAssetStates.values()]
+      .filter(({ status }) => status === "failed")
+      .map(({ src, phase, error }) => ({
+        src,
+        phase,
+        message: error?.message || "Unknown initial image error",
+      })),
+  });
+  const updateReadyState = () => {
+    const homeReport = getHomeReport();
+    const homeDecorationReport = getDecorationGroupReport("home");
+    const homeReady =
+      homeReport.pending.length === 0 &&
+      homeReport.failed.length === 0 &&
+      homeDecorationReport.pending.length === 0 &&
+      homeDecorationReport.failed.length === 0;
+    document.querySelector(".craft-table-v3")?.classList.toggle("home-ready", homeReady);
+    window.siteShellAssetsReady = homeReady && getDecorationAssetReport().ready;
+    return { homeReady, homeReport, homeDecorationReport };
+  };
+  const initialState = updateReadyState();
   const decorationReport = getDecorationAssetReport();
-  const failedHomeAssets = [...homeAssetStates]
-    .filter(([, status]) => status === "rejected")
-    .map(([src]) => src);
-  if (result === "timeout" || decorationReport.pending.length || failedHomeAssets.length) {
-    console.warn("[initial-preload] Continuing with unresolved assets.", {
+  if (
+    result === "timeout" ||
+    initialState.homeReport.pending.length ||
+    initialState.homeReport.failed.length ||
+    decorationReport.pending.length ||
+    decorationReport.failed.length
+  ) {
+    const issueReport = {
       elapsedMs: Math.round(performance.now()),
-      pendingDecorations: decorationReport.pending,
-      failedDecorations: decorationReport.failed,
-      pendingHomeAssets: [...homeAssetStates]
-        .filter(([, status]) => status === "pending")
-        .map(([src]) => src),
-      failedHomeAssets,
+      outcome: result,
+      pendingDecorations: decorationReport.pending.map((src) => new URL(src, location.href).href),
+      failedDecorations: decorationReport.failed.map((item) => ({
+        ...item,
+        src: new URL(item.src, location.href).href,
+      })),
+      pendingHomeAssets: initialState.homeReport.pending.map(
+        (src) => new URL(src, location.href).href,
+      ),
+      failedHomeAssets: initialState.homeReport.failed.map((item) => ({
+        ...item,
+        src: new URL(item.src, location.href).href,
+      })),
+    };
+    console.warn(
+      "[initial-preload] Continuing with unresolved assets.\n" +
+        JSON.stringify(issueReport, null, 2),
+    );
+  }
+
+  if (result === "timeout") {
+    siteShellSettled.then(() => {
+      const finalState = updateReadyState();
+      const finalDecorations = getDecorationAssetReport();
+      if (finalState.homeReport.failed.length || finalDecorations.failed.length) {
+        console.error(
+          "[initial-preload] Background loading completed with failed assets.\n" +
+            JSON.stringify(
+              {
+                failedHomeAssets: finalState.homeReport.failed.map((item) => ({
+                  ...item,
+                  src: new URL(item.src, location.href).href,
+                })),
+                failedDecorations: finalDecorations.failed.map((item) => ({
+                  ...item,
+                  src: new URL(item.src, location.href).href,
+                })),
+              },
+              null,
+              2,
+            ),
+        );
+      } else {
+        console.info("[initial-preload] Pending assets finished loading in the background.");
+      }
     });
   }
-  window.siteShellAssetsReady = result === "ready";
+
+  await waitForStableHomePaint();
   window.clearTimeout(window.__initialRevealFallback);
   window.__initialRevealAt ||= performance.now();
   document.documentElement.classList.remove("is-initial-fallback-expired");

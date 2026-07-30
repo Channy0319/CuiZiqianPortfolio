@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#8a5737" />
     <script>
+      window.__initialLoadingStartedAt = performance.now();
       document.documentElement.classList.add("is-initial-loading");
-      const initialFallbackMs = 5100;
+      const initialFallbackMs = 8200;
       window.__initialRevealFallback = window.setTimeout(() => {
         window.__initialFallbackExpired = true;
         window.siteShellAssetsReady ??= false;
