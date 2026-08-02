@@ -137,8 +137,8 @@ export function ResumeSceneV3(container) {
             </div>
             <a
               class="resume-download"
-              href="/assets/resume/崔子芊-香港中文大学硕士-27届.pdf"
-              download="崔子芊-香港中文大学硕士-27届.pdf"
+              href="/assets/resume/崔子芊-香港中文大学硕士-27届-13693571720.pdf"
+              download="崔子芊-香港中文大学硕士-27届-13693571720.pdf"
             >
               <span class="resume-download-clip" aria-hidden="true"></span>
               <span>DOWNLOAD<br />FULL RESUME</span>
@@ -175,7 +175,7 @@ export function ResumeSceneV3(container) {
               "阳狮集团 · 北京李奥贝纳广告有限公司",
               "客户执行（AE）",
               [
-                "参与年刊、安慕希等品牌的市场研究，洞察消费者需求与新品策略制定。",
+                "参与安慕希等品牌的市场研究，洞察消费者需求与新品策略制定。",
                 "协助客户、策略及创意团队推进项目，输出品牌定位、产品命名与传播方向建议。",
               ],
               "sage",
